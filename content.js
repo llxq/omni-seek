@@ -25,17 +25,22 @@ const createContent = () => {
 
 const sendBookMarks = async () => {
     try {
-        await chrome.runtime.sendMessage({action: 'updateBookMarks', bookMarks})
+        await chrome.runtime.sendMessage({
+            action: 'updateBookMarks',
+            bookMarks,
+        })
     } catch (e) {
         console.log('bookmark-search error:', e)
     }
 }
 
 const focusInput = () => {
-    const iframe = document.getElementById(search_dom_id).querySelector('iframe')
+    const iframe = document
+        .getElementById(search_dom_id)
+        .querySelector('iframe')
     if (iframe) {
         // 通过postMessage发送消息
-        iframe.contentWindow.postMessage({action: 'focusInput'}, '*')
+        iframe.contentWindow.postMessage({ action: 'focusInput' }, '*')
         sendBookMarks()
     }
 }
@@ -57,7 +62,7 @@ const createContainer = () => {
             width: '100%',
             height: '100%',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 9999,
+            zIndex: 2147483647,
         })
         const iframe = createContent()
         container.appendChild(iframe)
@@ -72,7 +77,10 @@ const createContainer = () => {
                 const url = e.data?.url
                 if (url) {
                     try {
-                        await chrome.runtime.sendMessage({action: 'goToBookmark', url})
+                        await chrome.runtime.sendMessage({
+                            action: 'goToBookmark',
+                            url,
+                        })
                     } catch (e) {
                         console.log('bookmark-search error:', e)
                     }
