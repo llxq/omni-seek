@@ -10267,7 +10267,7 @@ const C1 = () => {
         url: x.url,
         openNewTab: al,
         findOpenTab: L
-      }), cy());
+      }), cy(), E(""));
     },
     []
   );

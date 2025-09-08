@@ -114,6 +114,8 @@ export const Popup = () => {
           findOpenTab,
         });
         closePopup();
+        // 关闭之后清空输入框
+        setKeyword("");
       }
     },
     [],
