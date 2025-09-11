@@ -1,6 +1,6 @@
 import "./popup.scss";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { IBookmark, ISearchBookmarkSetting } from '../../shared/types.ts'
+import type { IBookmark, ISearchBookmarkSetting } from "../../shared/types.ts";
 
 /**
  * 向 popup.js 发送消息
@@ -48,17 +48,25 @@ export const Popup = () => {
   const searchBookmarksRef = useLatest(searchBookmarks);
   const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState<string>("");
+  const keywordRef = useLatest(keyword);
   const [selectedId, setSelectedId] = useState<string>("");
   const selectedIdRef = useLatest(selectedId);
+  const [formData, setFormData] = useState<ISearchBookmarkSetting>({
+    openNewTab: "1",
+    searchRule: ["url", "title", "parentTitle"],
+    useDefaultSearch: "0",
+  });
+  const formDataRef = useLatest(formData);
 
   const updateCompareRule = useCallback(async () => {
-   const storage = await chrome.storage.local.get<{
-      searchBookmarkSetting: ISearchBookmarkSetting
-    }>("searchBookmarkSetting")
+    const storage = await chrome.storage.local.get<{
+      searchBookmarkSetting: ISearchBookmarkSetting;
+    }>("searchBookmarkSetting");
     if (storage.searchBookmarkSetting) {
-      compareRule = storage.searchBookmarkSetting.searchRule
+      compareRule = storage.searchBookmarkSetting.searchRule;
+      setFormData(storage.searchBookmarkSetting);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     const messageHandler = (message: {
@@ -72,7 +80,7 @@ export const Popup = () => {
           setBookmarks(bookmarks);
           setHistoryBookmarks(historyBookmarks);
           inputRef.current?.focus();
-        })
+        });
       }
     };
     chrome.runtime?.onMessage?.addListener(messageHandler);
@@ -94,20 +102,22 @@ export const Popup = () => {
         () => [],
       );
       for (let i = 0; i < compareRule.length; i++) {
-        stacks[i] = bookmarks.filter((f) =>
-          compare(keyword, Reflect.get(f, compareRule[i]) as string),
-        ).sort((s, t) => {
-          const rule = compareRule[i];
-          const sValue = (Reflect.get(s, rule) || "") as string;
-          const tValue = (Reflect.get(t, rule) || "") as string;
-          const kl = keyword.toLowerCase();
-          if (rule === "title") {
-            return sValue.length - tValue.length;
-          } else if (rule === "url") {
-            return kl.indexOf(sValue) - kl.indexOf(tValue);
-          }
-          return 1;
-        });
+        stacks[i] = bookmarks
+          .filter((f) =>
+            compare(keyword, Reflect.get(f, compareRule[i]) as string),
+          )
+          .sort((s, t) => {
+            const rule = compareRule[i];
+            const sValue = (Reflect.get(s, rule) || "") as string;
+            const tValue = (Reflect.get(t, rule) || "") as string;
+            const kl = keyword.toLowerCase();
+            if (rule === "title") {
+              return sValue.length - tValue.length;
+            } else if (rule === "url") {
+              return kl.indexOf(sValue) - kl.indexOf(tValue);
+            }
+            return 1;
+          });
       }
       const result = stacks.reduce(
         (pre, cur) => [...new Set([...pre, ...cur])],
@@ -122,22 +132,20 @@ export const Popup = () => {
    * 根据 url 打开书签
    * @param bookmark
    */
-  const selectBookmarkByUrl = useCallback(
-    (bookmark: IBookmark): void => {
-      setSelectedId(bookmark.id || "");
-      if (bookmark.url) {
-        sendMessageToPopupScript({
-          action: "goToBookmark",
-          url: bookmark.url,
-          faviconURL: bookmark.faviconURL,
-        });
-        closePopup();
-        // 关闭之后清空输入框
-        setKeyword("");
-      }
-    },
-    [],
-  );
+  const selectBookmarkByUrl = useCallback((bookmark: IBookmark): void => {
+    setSelectedId(bookmark?.id || "");
+    if (!bookmark?.url && formDataRef.current.useDefaultSearch === "0") {
+      return;
+    }
+    sendMessageToPopupScript({
+      action: "goToBookmark",
+      url: bookmark?.url || "",
+      keyword: keywordRef.current,
+    });
+    closePopup();
+    // 关闭之后清空输入框
+    setKeyword("");
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -167,12 +175,12 @@ export const Popup = () => {
           setSelectedId(searchBookmarksRef.current[nextIndex].id);
           event.preventDefault();
         }
+      }
 
-        /* 按下回车 */
-        if (event.key === "Enter") {
-          selectBookmarkByUrl(searchBookmarksRef.current[index]);
-          event.preventDefault();
-        }
+      /* 按下回车 */
+      if (event.key === "Enter") {
+        selectBookmarkByUrl(searchBookmarksRef.current[index]);
+        event.preventDefault();
       }
     };
 

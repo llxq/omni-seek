@@ -24,4 +24,9 @@ export interface ISearchBookmarkSetting {
    * @default ["url", "title", "parentTitle"]
    */
   searchRule: (keyof IBookmark)[]
+  /**
+   * 查询结果为空的时候是否用默认搜索引擎搜索
+   * @default 0
+   */
+  useDefaultSearch: TBooleanValue
 }

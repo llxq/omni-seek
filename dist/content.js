@@ -1,30 +1,30 @@
 const o = "__bookmarks_search__";
-let i = [], r = [];
-const m = () => {
+let a = [], i = [];
+const r = () => {
   const e = document.getElementById(o);
   e && Object.assign(e.style, {
     display: "none"
   }), window.focus();
 }, s = () => {
   const e = document.getElementById(o)?.querySelector("iframe");
-  e && (e.contentWindow?.postMessage({ action: "focusInput" }, "*"), k());
-}, l = () => {
+  e && (e.contentWindow?.postMessage({ action: "focusInput" }, "*"), m());
+}, d = () => {
   const e = document.createElement("iframe");
   return e.src = chrome.runtime.getURL("popup.html"), Object.assign(e.style, {
     width: "100%",
     height: "100%"
   }), e;
-}, k = async () => {
+}, m = async () => {
   try {
     await chrome.runtime.sendMessage({
       action: "updateBookMarks",
-      bookmarks: i,
-      historyBookmarks: r
+      bookmarks: a,
+      historyBookmarks: i
     });
   } catch (e) {
     console.log("bookmark-search error:", e);
   }
-}, u = () => {
+}, k = () => {
   let e = document.getElementById(o);
   if (e)
     Object.assign(e.style, {
@@ -40,29 +40,16 @@ const m = () => {
       // max-zIndex
       zIndex: 2147483647
     });
-    const c = l();
-    e.appendChild(c), document.body.appendChild(e), window.addEventListener("message", async (t) => {
-      const n = t.data?.action ?? "";
-      if (n === "initSuccess")
-        s();
-      else if (n === "closePopup")
-        m();
-      else if (n === "goToBookmark") {
-        const a = t.data?.url;
-        if (a)
-          try {
-            await chrome.runtime.sendMessage({
-              action: "goToBookmark",
-              ...t.data,
-              url: a
-            });
-          } catch (d) {
-            console.log("bookmark-search error:", d);
-          }
-      }
+    const c = d();
+    e.appendChild(c), document.body.appendChild(e), window.addEventListener("message", async (n) => {
+      const t = n.data?.action ?? "";
+      t === "initSuccess" ? s() : t === "closePopup" ? r() : t === "goToBookmark" && await chrome.runtime.sendMessage({
+        action: "goToBookmark",
+        ...n.data
+      });
     });
   }
 };
 chrome.runtime.onMessage.addListener((e) => {
-  e.action === "openPopup" && (i = e.bookMarks || [], r = e.historyBookmarks || [], u());
+  e.action === "openPopup" && (a = e.bookMarks || [], i = e.historyBookmarks || [], k());
 });

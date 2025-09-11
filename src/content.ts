@@ -96,18 +96,10 @@ const createBookmarksContainer = () => {
       } else if (action === "closePopup") {
         hiddenBookmarksContainer();
       } else if (action === "goToBookmark") {
-        const url = e.data?.url;
-        if (url) {
-          try {
-            await chrome.runtime.sendMessage({
-              action: "goToBookmark",
-              ...e.data,
-              url,
-            });
-          } catch (e) {
-            console.log("bookmark-search error:", e);
-          }
-        }
+        await chrome.runtime.sendMessage({
+          action: "goToBookmark",
+          ...e.data,
+        });
       }
     });
   }

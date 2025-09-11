@@ -13,7 +13,9 @@
     "windows",
     "history",
     "favicon",
-    "storage"
+    "storage",
+    "search",
+    "notifications"
   ],
   "background": {
     "service_worker": "background.js"

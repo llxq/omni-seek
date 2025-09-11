@@ -1,4 +1,4 @@
-import type { IBookmark, ISearchBookmarkSetting } from './shared/types.ts'
+import type { IBookmark, ISearchBookmarkSetting } from "./shared/types.ts";
 
 /**
  * 搜索的标签历史记录 缓存的key
@@ -137,6 +137,22 @@ chrome.runtime.onMessage.addListener(async (message) => {
       return;
     }
     isOpening = true;
+    // 拿到配置
+    const data = await chrome.storage.local.get<{
+      searchBookmarkSetting: ISearchBookmarkSetting;
+    }>("searchBookmarkSetting");
+    if (!message.url) {
+      if (
+        data.searchBookmarkSetting.useDefaultSearch === "1" &&
+        message.keyword
+      ) {
+        await chrome.search.query({
+          disposition: "NEW_TAB",
+          text: message.keyword,
+        });
+      }
+      return;
+    }
     // 记录当前跳转过的书签
     const history = await getSelectHistory();
     // 每次点过的会放在最前面
@@ -151,13 +167,11 @@ chrome.runtime.onMessage.addListener(async (message) => {
     await chrome.storage.local.set({
       [BOOK_MARK_SEARCH_LOCAL_STORAGE_ID]: history,
     });
-    // 拿到配置
-    const data = await chrome.storage.local.get<{ searchBookmarkSetting: ISearchBookmarkSetting }>("searchBookmarkSetting")
     // 如果是
-    let activeId: TUndefinable<number>
+    let activeId: TUndefinable<number>;
     if (+data.searchBookmarkSetting.openNewTab === 0) {
       const tab = await chrome.tabs.query({});
-      const domain = getDomain(message.url)
+      const domain = getDomain(message.url);
       if (tab?.length && domain) {
         const findTab = tab.find((t) => getDomain(t.url) === domain);
         if (findTab) {
