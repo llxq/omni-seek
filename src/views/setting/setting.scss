@@ -1,0 +1,48 @@
+.setting__container {
+  width: 300px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .setting__title {
+    height: 42px;
+    line-height: 42px;
+    padding-left: 12px;
+    color: #333;
+    font-size: 16px;
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+  }
+
+  .setting__content {
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+    padding: 16px;
+  }
+
+  .setting__footer {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 16px;
+
+    .submit-button {
+      width: 88px;
+      border: 1px solid #4096ff;
+      border-radius: 4px;
+      color: #4096ff;
+      background-color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+
+      &:hover {
+        // 增加 0.15% 的透明度
+        background-color: rgba(64, 150, 255, 0.15);
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
-import "./Popup.scss";
+import "./popup.scss";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { IBookmark } from "../shared/types.ts";
+import type { IBookmark, ISearchBookmarkSetting } from '../../shared/types.ts'
 
 /**
  * 向 popup.js 发送消息
@@ -27,9 +27,6 @@ const compare = (compareValue: string, targetValue: string): boolean => {
   return false;
 };
 
-// 排序规则，优先匹配 name，其次是 url ，最后是父节点
-const compareRule: (keyof IBookmark)[] = ["title", "url", "parentTitle"];
-
 /**
  * 获取最新值
  * @param value
@@ -42,6 +39,8 @@ function useLatest<T>(value: T) {
   return ref;
 }
 
+let compareRule: (keyof IBookmark)[] = ["title", "url", "parentTitle"];
+
 export const Popup = () => {
   const [bookmarks, setBookmarks] = useState<IBookmark[]>([]);
   const [historyBookmarks, setHistoryBookmarks] = useState<IBookmark[]>([]);
@@ -52,6 +51,15 @@ export const Popup = () => {
   const [selectedId, setSelectedId] = useState<string>("");
   const selectedIdRef = useLatest(selectedId);
 
+  const updateCompareRule = useCallback(async () => {
+   const storage = await chrome.storage.local.get<{
+      searchBookmarkSetting: ISearchBookmarkSetting
+    }>("searchBookmarkSetting")
+    if (storage.searchBookmarkSetting) {
+      compareRule = storage.searchBookmarkSetting.searchRule
+    }
+  }, [])
+
   useEffect(() => {
     const messageHandler = (message: {
       action: string;
@@ -59,10 +67,12 @@ export const Popup = () => {
       historyBookmarks?: IBookmark[];
     }) => {
       if (message.action === "updateBookMarks") {
-        const { bookmarks = [], historyBookmarks = [] } = message;
-        setBookmarks(bookmarks);
-        setHistoryBookmarks(historyBookmarks);
-        inputRef.current?.focus();
+        updateCompareRule().finally(() => {
+          const { bookmarks = [], historyBookmarks = [] } = message;
+          setBookmarks(bookmarks);
+          setHistoryBookmarks(historyBookmarks);
+          inputRef.current?.focus();
+        })
       }
     };
     chrome.runtime?.onMessage?.addListener(messageHandler);
@@ -111,18 +121,15 @@ export const Popup = () => {
   /**
    * 根据 url 打开书签
    * @param bookmark
-   * @param openNewTab 是否在新标签页打开
-   * @param findOpenTab 是否查找已经打开的标签
    */
   const selectBookmarkByUrl = useCallback(
-    (bookmark: IBookmark, openNewTab = true, findOpenTab = false): void => {
+    (bookmark: IBookmark): void => {
       setSelectedId(bookmark.id || "");
       if (bookmark.url) {
         sendMessageToPopupScript({
           action: "goToBookmark",
           url: bookmark.url,
-          openNewTab,
-          findOpenTab,
+          faviconURL: bookmark.faviconURL,
         });
         closePopup();
         // 关闭之后清空输入框
@@ -137,6 +144,8 @@ export const Popup = () => {
       /* 按下esc关闭 */
       if (event.key === "Escape") {
         closePopup();
+        // 关闭之后清空输入框
+        setKeyword("");
         return;
       }
 

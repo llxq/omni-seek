@@ -1,4 +1,4 @@
-import type { IBookmark } from "./shared/types.ts";
+import type { IBookmark, ISearchBookmarkSetting } from './shared/types.ts'
 
 /**
  * 搜索的标签历史记录 缓存的key
@@ -119,10 +119,24 @@ chrome.commands.onCommand.addListener((command) => {
 });
 
 /**
+ * 获取某个url的域名
+ */
+const getDomain = (url?: string) => {
+  if (!url) return "";
+  return new URL(url).hostname;
+};
+
+// 用于防止多次点击打开相同窗口
+let isOpening = false;
+/**
  * 监听来自 popup.html 的消息，进行跳转
  */
 chrome.runtime.onMessage.addListener(async (message) => {
   if (message.action === "goToBookmark") {
+    if (isOpening) {
+      return;
+    }
+    isOpening = true;
     // 记录当前跳转过的书签
     const history = await getSelectHistory();
     // 每次点过的会放在最前面
@@ -137,7 +151,25 @@ chrome.runtime.onMessage.addListener(async (message) => {
     await chrome.storage.local.set({
       [BOOK_MARK_SEARCH_LOCAL_STORAGE_ID]: history,
     });
-    // 找到所有已经打开的标签 TODO
-    await chrome.tabs.create({ url: message.url });
+    // 拿到配置
+    const data = await chrome.storage.local.get<{ searchBookmarkSetting: ISearchBookmarkSetting }>("searchBookmarkSetting")
+    // 如果是
+    let activeId: TUndefinable<number>
+    if (+data.searchBookmarkSetting.openNewTab === 0) {
+      const tab = await chrome.tabs.query({});
+      const domain = getDomain(message.url)
+      if (tab?.length && domain) {
+        const findTab = tab.find((t) => getDomain(t.url) === domain);
+        if (findTab) {
+          activeId = findTab.id;
+        }
+      }
+    }
+    if (activeId) {
+      await chrome.tabs.update(activeId, { active: true });
+    } else {
+      await chrome.tabs.create({ url: message.url });
+    }
+    isOpening = false;
   }
 });

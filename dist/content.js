@@ -5,7 +5,7 @@ const m = () => {
   e && Object.assign(e.style, {
     display: "none"
   }), window.focus();
-}, a = () => {
+}, s = () => {
   const e = document.getElementById(o)?.querySelector("iframe");
   e && (e.contentWindow?.postMessage({ action: "focusInput" }, "*"), k());
 }, l = () => {
@@ -29,7 +29,7 @@ const m = () => {
   if (e)
     Object.assign(e.style, {
       display: "initial"
-    }), a();
+    }), s();
   else {
     e = document.createElement("div"), e.id = o, Object.assign(e.style, {
       position: "fixed",
@@ -41,19 +41,20 @@ const m = () => {
       zIndex: 2147483647
     });
     const c = l();
-    e.appendChild(c), document.body.appendChild(e), window.addEventListener("message", async (n) => {
-      const t = n.data?.action ?? "";
-      if (t === "initSuccess")
-        a();
-      else if (t === "closePopup")
+    e.appendChild(c), document.body.appendChild(e), window.addEventListener("message", async (t) => {
+      const n = t.data?.action ?? "";
+      if (n === "initSuccess")
+        s();
+      else if (n === "closePopup")
         m();
-      else if (t === "goToBookmark") {
-        const s = n.data?.url;
-        if (s)
+      else if (n === "goToBookmark") {
+        const a = t.data?.url;
+        if (a)
           try {
             await chrome.runtime.sendMessage({
               action: "goToBookmark",
-              url: s
+              ...t.data,
+              url: a
             });
           } catch (d) {
             console.log("bookmark-search error:", d);

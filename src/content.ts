@@ -32,7 +32,7 @@ const focusInput = () => {
   if (iframe) {
     // 通过postMessage发送消息
     iframe.contentWindow?.postMessage({ action: "focusInput" }, "*");
-    sendBookmarksDataToPopup();
+    void sendBookmarksDataToPopup();
   }
 };
 
@@ -101,6 +101,7 @@ const createBookmarksContainer = () => {
           try {
             await chrome.runtime.sendMessage({
               action: "goToBookmark",
+              ...e.data,
               url,
             });
           } catch (e) {

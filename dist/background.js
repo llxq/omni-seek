@@ -1,55 +1,70 @@
-const c = "bookMarkSearch";
-const n = () => new Promise((o) => {
-  chrome.storage.local.get(c, (t) => {
-    o(t[c] || []);
+const l = "bookMarkSearch";
+const m = () => new Promise((e) => {
+  chrome.storage.local.get(l, (r) => {
+    e(r[l] || []);
   });
-}), h = (o) => {
-  const t = new URL(chrome.runtime.getURL("/_favicon/"));
-  return t.searchParams.set("pageUrl", o), t.searchParams.set("size", "24"), t.toString();
-}, m = async () => new Promise(async (o) => {
-  const t = [], e = (r, s = "") => {
-    r.children && r.children.forEach(
-      (i) => e(
-        i,
-        s ? `${s}/${r.title}` : r.title
+}), f = (e) => {
+  const r = new URL(chrome.runtime.getURL("/_favicon/"));
+  return r.searchParams.set("pageUrl", e), r.searchParams.set("size", "24"), r.toString();
+}, k = async () => new Promise(async (e) => {
+  const r = [], o = (t, i = "") => {
+    t.children && t.children.forEach(
+      (s) => o(
+        s,
+        i ? `${i}/${t.title}` : t.title
       )
-    ), r.url && r.title && t.push({
-      url: r.url,
-      title: r.title,
-      id: r.id,
-      parentId: r.parentId,
-      parentTitle: s,
-      faviconURL: h(r.url)
+    ), t.url && t.title && r.push({
+      url: t.url,
+      title: t.title,
+      id: t.id,
+      parentId: t.parentId,
+      parentTitle: i,
+      faviconURL: f(t.url)
     });
   }, a = await chrome.bookmarks.getTree();
-  Array.isArray(a) ? a.forEach((r) => e(r)) : e(a), o(t);
+  Array.isArray(a) ? a.forEach((t) => o(t)) : o(a), e(r);
 });
-chrome.commands.onCommand.addListener((o) => {
-  o === "open-bookmarks-search-dialog" && chrome.tabs.query({ active: !0, currentWindow: !0 }, async (t) => {
-    const [e] = t;
-    if (e) {
-      const a = e.url;
+chrome.commands.onCommand.addListener((e) => {
+  e === "open-bookmarks-search-dialog" && chrome.tabs.query({ active: !0, currentWindow: !0 }, async (r) => {
+    const [o] = r;
+    if (o) {
+      const a = o.url;
       if (a && !a.startsWith("chrome://") && !a.startsWith("chrome-extension://"))
         try {
-          const r = await m(), s = await n();
-          e.id && await chrome.tabs.sendMessage(e.id, {
+          const t = await k(), i = await m();
+          o.id && await chrome.tabs.sendMessage(o.id, {
             action: "openPopup",
-            bookMarks: r,
-            historyBookmarks: s.map((i) => r.find((l) => l.url === i)).filter(Boolean)
+            bookMarks: t,
+            historyBookmarks: i.map((s) => t.find((n) => n.url === s)).filter(Boolean)
           });
-        } catch (r) {
-          console.log("bookmark-search error:", r);
+        } catch (t) {
+          console.log("bookmark-search error:", t);
         }
       else
         console.log("Cannot inject script into this page:", a);
     }
   });
 });
-chrome.runtime.onMessage.addListener(async (o) => {
-  if (o.action === "goToBookmark") {
-    const t = await n(), e = t.findIndex((a) => a === o.url);
-    e !== -1 && t.splice(e, 1), t.unshift(o.url), t.length > 10 && t.pop(), await chrome.storage.local.set({
-      [c]: t
-    }), await chrome.tabs.create({ url: o.url });
+const h = (e) => e ? new URL(e).hostname : "";
+let c = !1;
+chrome.runtime.onMessage.addListener(async (e) => {
+  if (e.action === "goToBookmark") {
+    if (c)
+      return;
+    c = !0;
+    const r = await m(), o = r.findIndex((i) => i === e.url);
+    o !== -1 && r.splice(o, 1), r.unshift(e.url), r.length > 10 && r.pop(), await chrome.storage.local.set({
+      [l]: r
+    });
+    const a = await chrome.storage.local.get("searchBookmarkSetting");
+    let t;
+    if (+a.searchBookmarkSetting.openNewTab == 0) {
+      const i = await chrome.tabs.query({}), s = h(e.url);
+      if (i?.length && s) {
+        const n = i.find((u) => h(u.url) === s);
+        n && (t = n.id);
+      }
+    }
+    t ? await chrome.tabs.update(t, { active: !0 }) : await chrome.tabs.create({ url: e.url }), c = !1;
   }
 });

@@ -1,0 +1,110 @@
+.checkbox__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color .15s;
+}
+
+.checkbox input[type="checkbox"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.checkbox > span {
+  display: inline-block;
+  position: relative;
+  padding-left: 28px;
+  color: inherit;
+  vertical-align: middle;
+}
+
+.checkbox > span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  box-sizing: border-box;
+  transition: all .18s cubic-bezier(.2,.8,.2,1);
+  will-change: transform, background, border-color;
+}
+
+.checkbox > span::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 45%;
+  transform: translateY(-50%) rotate(45deg) scale(0);
+  width: 3px;
+  height: 6px;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  box-sizing: content-box;
+  transition: transform .12s ease-in-out, border-color .12s ease-in-out;
+  transform-origin: center;
+}
+
+.checkbox input[type="checkbox"]:checked + span::before {
+  background: #1890ff;
+  border-color: #1890ff;
+}
+
+.checkbox input[type="checkbox"]:checked + span::after {
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+  transform: translateY(-50%) rotate(45deg) scale(1);
+}
+
+.checkbox:hover > span::before {
+  border-color: #40a9ff;
+}
+
+.checkbox input[type="checkbox"]:focus + span::before {
+  box-shadow: 0 0 0 4px rgba(24, 144, 255, 0.12);
+  outline: none;
+}
+
+.checkbox:active > span::before {
+  transform: translateY(-50%) scale(.98);
+}
+
+.checkbox input[type="checkbox"]:disabled + span {
+  color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+.checkbox input[type="checkbox"]:disabled + span::before {
+  background: #f5f5f5;
+  border-color: #d9d9d9;
+}
+
+.checkbox input[type="checkbox"]:checked:disabled + span::before {
+  background: #bae7ff;
+  border-color: #bae7ff;
+}
