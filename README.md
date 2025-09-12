@@ -1,9 +1,10 @@
 # bookmark-search
-这是一个chroma插件，可以按住 ctrl/command + B 进行搜索您的书签，并且点击/回车打开您的书签。支持书签名称/URL/文件夹搜索。多层级文件夹使用 `/` 分割。如：`文件夹1/文件夹2/标签1`
+这是一个 `Chroma` 插件，可以按住 `Ctrl/Command + B` 进行搜索您的书签，并且点击/回车打开您的书签。支持书签名称/URL/文件夹搜索。多层级文件夹使用 `/` 分割。如：`文件夹1/文件夹2/标签1`
 
 # 设置
 1. 点击扩展程序图标即可打开设置页面。您可根据自己的搜索习惯设置搜索规则
 ![image](https://github.com/user-attachments/assets/95c71f4b-6058-4e09-a3b0-93bd32c9b645)
+2. 通过快捷键 `Ctrl/Command + K` 可快速打开设置页面
 
 
 # 使用
@@ -20,10 +21,10 @@
 4. 将 `dist 文件夹` 拖动到 扩展内部，类似如图
 ![image](https://github.com/user-attachments/assets/37e3c920-8ba5-4df6-9f64-00955dfffeb5)
 - 在非浏览器自定义页面（如：设置页面，扩展程序页面）按下快捷键即可打开搜索。
-  - windows
-    - ctrl + B
-  - mac
-    - command + B
+  - Windows
+    - Ctrl + B
+  - Mac
+    - Command + B
    
 ![image](https://github.com/user-attachments/assets/efdea048-6bf5-413d-9897-4bf914bb60b7)
 

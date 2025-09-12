@@ -30,6 +30,13 @@
     "default_popup": "popup.html"
   },
   "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+K",
+        "mac": "Command+K"
+      },
+      "description": "open setting page"
+    },
     "open-bookmarks-search-dialog": {
       "suggested_key": {
         "default": "Ctrl+B",

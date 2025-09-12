@@ -59,6 +59,8 @@ export const Popup = () => {
   const formDataRef = useLatest(formData);
   const selectedRectRef = useRef<HTMLDivElement>(null);
   const [selectedRect, setSelectedRect] = useState({ top: 0, height: 0 });
+  const [isComposition, setIsComposition] = useState(false);
+  const isCompositionRef = useLatest(isComposition);
 
   const updateCompareRule = useCallback(async () => {
     const storage = await chrome.storage.local.get<{
@@ -189,12 +191,15 @@ export const Popup = () => {
 
       /* 按下回车 */
       if (event.key === "Enter") {
-        // ctrl 按下 或者 command 按下
-        selectBookmarkByUrl(
-          searchBookmarksRef.current[index],
-          event.metaKey || event.ctrlKey,
-        );
-        event.preventDefault();
+        // 正在合成的时候不触发查询。
+        if (!isCompositionRef.current) {
+          // ctrl 按下 或者 command 按下
+          selectBookmarkByUrl(
+            searchBookmarksRef.current[index],
+            event.metaKey || event.ctrlKey,
+          );
+          event.preventDefault();
+        }
       }
     };
 
@@ -227,7 +232,7 @@ export const Popup = () => {
       <div className="bookmarks-search__content">
         <div className="bookmarks-search__search">
           <input
-            placeholder="请输入要搜索的关键字"
+            placeholder="请输入要搜索的关键字，Enter 打开选中项、Esc 取消、↑ 或 ↓ 切换选中项"
             type="text"
             autoComplete="off"
             className="bookmarks-search__search-input"
@@ -235,6 +240,8 @@ export const Popup = () => {
             ref={inputRef}
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
+            onCompositionStart={() => setIsComposition(true)}
+            onCompositionEnd={() => setIsComposition(false)}
           />
         </div>
         <div ref={selectedRectRef} className="bookmarks-search__list">
