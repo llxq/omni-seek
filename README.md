@@ -25,8 +25,9 @@
     - Ctrl + B
   - Mac
     - Command + B
-   
-![image](https://github.com/user-attachments/assets/efdea048-6bf5-413d-9897-4bf914bb60b7)
+   [
+![image](https://github.com/user-attachments/assets/1934a555-8123-4ad5-a72e-e303c156d108)
+
 
 # 搜索结果展示
 ![image](https://github.com/user-attachments/assets/5e29e896-48a7-4d4b-9e43-365fbf3a0257)
