@@ -7,7 +7,7 @@
 2. 通过快捷键 `Ctrl/Command + K` 可快速打开设置页面
 
 
-# 使用
+# 安转
 1. 下载项目到本地
     ```shell
     git clone https://github.com/llxq/bookmark-search.git
@@ -21,7 +21,12 @@
 4. 将 `dist 文件夹` 拖动到 扩展内部，成功后会出现对应的扩展程序。
 ![image](https://github.com/user-attachments/assets/54bf5914-fd7c-4019-ac06-00eaad36be81)
 
-- 在非浏览器自定义页面（如：设置页面，扩展程序页面）按下快捷键即可打开搜索。
+# 注意
+`第一次安装完之后原来曾经打开过的浏览器标签页使用需要刷新页面才能使用。新打开的正常使用即可。`
+
+# 使用
+
+1. 在非浏览器自定义页面（如：设置页面，扩展程序页面）按下快捷键即可打开搜索。
   - Windows
     - Ctrl + B
   - Mac
@@ -33,6 +38,3 @@
 # 搜索结果展示
 ![image](https://github.com/user-attachments/assets/01265646-0a14-424c-8ea3-60327344009d)
 
-
-# 注意
-`第一次安装完之后原来曾经打开过的浏览器标签页使用需要刷新页面才能使用。新打开的正常使用即可。`
