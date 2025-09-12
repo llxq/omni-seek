@@ -57,6 +57,8 @@ export const Popup = () => {
     useDefaultSearch: "0",
   });
   const formDataRef = useLatest(formData);
+  const selectedRectRef = useRef<HTMLDivElement>(null);
+  const [selectedRect, setSelectedRect] = useState({ top: 0, height: 0 });
 
   const updateCompareRule = useCallback(async () => {
     const storage = await chrome.storage.local.get<{
@@ -80,6 +82,9 @@ export const Popup = () => {
           setBookmarks(bookmarks);
           setHistoryBookmarks(historyBookmarks);
           inputRef.current?.focus();
+          const { top = 0, height = 0 } =
+            selectedRectRef.current?.getBoundingClientRect() ?? {};
+          setSelectedRect({ top, height });
         });
       }
     };
@@ -200,6 +205,23 @@ export const Popup = () => {
     };
   }, [selectBookmarkByUrl]);
 
+  useEffect(() => {
+    const selectedElement = document.querySelector(`[data-id="${selectedId}"]`);
+    if (selectedElement) {
+      // 判断是否在区间内
+      const { top, height } = selectedElement.getBoundingClientRect();
+      const { top: selectedTop, height: selectedHeight } = selectedRect;
+      const isInRange =
+        top >= selectedTop && top + height <= selectedTop + selectedHeight;
+      if (!isInRange) {
+        selectedElement.scrollIntoView({
+          block: "center",
+          inline: "center",
+        });
+      }
+    }
+  }, [selectedId, selectedIdRef]);
+
   return (
     <div className="bookmarks-search__container">
       <div className="bookmarks-search__content">
@@ -215,7 +237,7 @@ export const Popup = () => {
             onChange={(e) => setKeyword(e.target.value)}
           />
         </div>
-        <div className="bookmarks-search__list">
+        <div ref={selectedRectRef} className="bookmarks-search__list">
           {searchBookmarks.map((item) => (
             <div
               onClick={(event) =>
@@ -223,6 +245,7 @@ export const Popup = () => {
               }
               className={`bookmarks-search__list-item ${selectedId === item.id ? "bookmarks-search__list-item-active" : ""}`}
               key={item.id}
+              data-id={item.id}
             >
               {item.faviconURL && (
                 <img
