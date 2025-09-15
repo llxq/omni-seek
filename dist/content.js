@@ -24,7 +24,8 @@ const r = () => {
   } catch (e) {
     console.log("bookmark-search error:", e);
   }
-}, k = () => {
+}, l = () => {
+  document.getSelection()?.removeAllRanges();
   let e = document.getElementById(o);
   if (e)
     Object.assign(e.style, {
@@ -51,5 +52,5 @@ const r = () => {
   }
 };
 chrome.runtime.onMessage.addListener((e) => {
-  e.action === "openPopup" && (a = e.bookMarks || [], i = e.historyBookmarks || [], k());
+  e.action === "openPopup" && (a = e.bookMarks || [], i = e.historyBookmarks || [], l());
 });

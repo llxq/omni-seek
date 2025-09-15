@@ -68,6 +68,8 @@ const sendBookmarksDataToPopup = async () => {
  * 创建搜索框
  */
 const createBookmarksContainer = () => {
+  // 取消所有的选中数据
+  document.getSelection()?.removeAllRanges();
   let container = document.getElementById(SEARCH_CONTAINER_DOM_ID);
   if (container) {
     Object.assign(container.style, {
