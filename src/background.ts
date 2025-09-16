@@ -137,53 +137,56 @@ chrome.runtime.onMessage.addListener(async (message) => {
       return;
     }
     isOpening = true;
-    // 拿到配置
-    const data = await chrome.storage.local.get<{
-      searchBookmarkSetting: ISearchBookmarkSetting;
-    }>("searchBookmarkSetting");
-    if (!message.url) {
-      if (
-        data.searchBookmarkSetting.useDefaultSearch === "1" &&
-        message.keyword
-      ) {
-        await chrome.search.query({
-          disposition: "NEW_TAB",
-          text: message.keyword,
-        });
+    try {
+      // 拿到配置
+      const data = await chrome.storage.local.get<{
+        searchBookmarkSetting: ISearchBookmarkSetting;
+      }>("searchBookmarkSetting");
+      if (!message.url) {
+        if (
+          data.searchBookmarkSetting.useDefaultSearch === "1" &&
+          message.keyword
+        ) {
+          await chrome.search.query({
+            disposition: "NEW_TAB",
+            text: message.keyword,
+          });
+        }
+        return;
       }
-      return;
-    }
-    // 记录当前跳转过的书签
-    const history = await getSelectHistory();
-    // 每次点过的会放在最前面
-    const index = history.findIndex((h) => h === message.url);
-    if (index !== -1) {
-      history.splice(index, 1);
-    }
-    history.unshift(message.url);
-    if (history.length > MAX_HISTORY_COUNT) {
-      history.pop();
-    }
-    await chrome.storage.local.set({
-      [BOOK_MARK_SEARCH_LOCAL_STORAGE_ID]: history,
-    });
-    const isCtrl = Boolean(message.isCtrl);
-    let activeId: TUndefinable<number>;
-    if (!isCtrl && +data.searchBookmarkSetting.openNewTab === 0) {
-      const tab = await chrome.tabs.query({});
-      const domain = getDomain(message.url);
-      if (tab?.length && domain) {
-        const findTab = tab.find((t) => getDomain(t.url) === domain);
-        if (findTab) {
-          activeId = findTab.id;
+      // 记录当前跳转过的书签
+      const history = await getSelectHistory();
+      // 每次点过的会放在最前面
+      const index = history.findIndex((h) => h === message.url);
+      if (index !== -1) {
+        history.splice(index, 1);
+      }
+      history.unshift(message.url);
+      if (history.length > MAX_HISTORY_COUNT) {
+        history.pop();
+      }
+      await chrome.storage.local.set({
+        [BOOK_MARK_SEARCH_LOCAL_STORAGE_ID]: history,
+      });
+      const isCtrl = Boolean(message.isCtrl);
+      let activeId: TUndefinable<number>;
+      if (!isCtrl && +data.searchBookmarkSetting.openNewTab === 0) {
+        const tab = await chrome.tabs.query({});
+        const domain = getDomain(message.url);
+        if (tab?.length && domain) {
+          const findTab = tab.find((t) => getDomain(t.url) === domain);
+          if (findTab) {
+            activeId = findTab.id;
+          }
         }
       }
+      if (activeId) {
+        await chrome.tabs.update(activeId, { active: true });
+      } else {
+        await chrome.tabs.create({ url: message.url });
+      }
+    } finally {
+      isOpening = false;
     }
-    if (activeId) {
-      await chrome.tabs.update(activeId, { active: true });
-    } else {
-      await chrome.tabs.create({ url: message.url });
-    }
-    isOpening = false;
   }
 });

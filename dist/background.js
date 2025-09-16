@@ -52,27 +52,31 @@ chrome.runtime.onMessage.addListener(async (t) => {
     if (c)
       return;
     c = !0;
-    const e = await chrome.storage.local.get("searchBookmarkSetting");
-    if (!t.url) {
-      e.searchBookmarkSetting.useDefaultSearch === "1" && t.keyword && await chrome.search.query({
-        disposition: "NEW_TAB",
-        text: t.keyword
-      });
-      return;
-    }
-    const o = await m(), a = o.findIndex((s) => s === t.url);
-    a !== -1 && o.splice(a, 1), o.unshift(t.url), o.length > 10 && o.pop(), await chrome.storage.local.set({
-      [l]: o
-    });
-    const r = !!t.isCtrl;
-    let i;
-    if (!r && +e.searchBookmarkSetting.openNewTab == 0) {
-      const s = await chrome.tabs.query({}), n = u(t.url);
-      if (s?.length && n) {
-        const h = s.find((f) => u(f.url) === n);
-        h && (i = h.id);
+    try {
+      const e = await chrome.storage.local.get("searchBookmarkSetting");
+      if (!t.url) {
+        e.searchBookmarkSetting.useDefaultSearch === "1" && t.keyword && await chrome.search.query({
+          disposition: "NEW_TAB",
+          text: t.keyword
+        });
+        return;
       }
+      const o = await m(), a = o.findIndex((s) => s === t.url);
+      a !== -1 && o.splice(a, 1), o.unshift(t.url), o.length > 10 && o.pop(), await chrome.storage.local.set({
+        [l]: o
+      });
+      const r = !!t.isCtrl;
+      let i;
+      if (!r && +e.searchBookmarkSetting.openNewTab == 0) {
+        const s = await chrome.tabs.query({}), n = u(t.url);
+        if (s?.length && n) {
+          const h = s.find((f) => u(f.url) === n);
+          h && (i = h.id);
+        }
+      }
+      i ? await chrome.tabs.update(i, { active: !0 }) : await chrome.tabs.create({ url: t.url });
+    } finally {
+      c = !1;
     }
-    i ? await chrome.tabs.update(i, { active: !0 }) : await chrome.tabs.create({ url: t.url }), c = !1;
   }
 });
