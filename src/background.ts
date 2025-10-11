@@ -139,9 +139,19 @@ chrome.runtime.onMessage.addListener(async (message) => {
     isOpening = true;
     try {
       // 拿到配置
-      const data = await chrome.storage.local.get<{
+      let data = await chrome.storage.local.get<{
         searchBookmarkSetting: ISearchBookmarkSetting;
       }>("searchBookmarkSetting");
+      // default setting
+      if (!Object.keys(data).length) {
+        data = {
+          searchBookmarkSetting: {
+            openNewTab: "1",
+            searchRule: ["url", "title", "parentTitle"],
+            useDefaultSearch: "0",
+          },
+        };
+      }
       if (!message.url) {
         if (
           data.searchBookmarkSetting.useDefaultSearch === "1" &&
@@ -169,7 +179,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
         [BOOK_MARK_SEARCH_LOCAL_STORAGE_ID]: history,
       });
       const isCtrl = Boolean(message.isCtrl);
-      let activeId: TUndefinable<number>;
+      let activeId: TUndefinable<number>, activeWindowId: TUndefinable<number>;
       if (!isCtrl && +data.searchBookmarkSetting.openNewTab === 0) {
         const tab = await chrome.tabs.query({});
         const domain = getDomain(message.url);
@@ -177,11 +187,19 @@ chrome.runtime.onMessage.addListener(async (message) => {
           const findTab = tab.find((t) => getDomain(t.url) === domain);
           if (findTab) {
             activeId = findTab.id;
+            activeWindowId = findTab.windowId;
           }
         }
       }
       if (activeId) {
-        await chrome.tabs.update(activeId, { active: true });
+        await Promise.all([
+          chrome.tabs.update(activeId, { active: true }),
+          () => {
+            if (activeWindowId) {
+              chrome.windows.update(activeWindowId, { focused: true });
+            }
+          },
+        ]);
       } else {
         await chrome.tabs.create({ url: message.url });
       }
