@@ -41,6 +41,12 @@
 
 
 # 常见问题解答 （FAQ）
+- __Q: 为什么按下了快捷键还是不会生效？__  <br />A: 这是可能因为该插件的快捷键和其他应用或者插件的快捷键冲突导致。您可尝试打开 `chrome://extensions/shortcuts` 地址，将 `Toggle a feature` 设置为 `global`。
+<img width="755" height="233" alt="image" src="https://github.com/user-attachments/assets/1a0ee8cf-aceb-47d3-99cf-94de817a8719" />
+如果还是无法解决该问题，推荐修改快捷键。您可以调整 `public/manifest.json` 文件中的 `open-bookmarks-search-dialog.suggested_key.default` 字段调整为自己想要的快捷键即可。然后重新执行打包脚本 `npm run build` 生成插件内容即可。
+<img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/65970ab7-d277-4630-87b7-6dbf21de3074" />
+如果您不想要重新生成插件内容，也可直接修改 `dist/manifest.json` 文件中的 `open-bookmarks-search-dialog.suggested_key.default` 字段。
+
 - __Q：为什么安装扩展后原先打开的标签页无法搜索到书签？__  <br />A：这是 Chrome 扩展的机制导致的限制。首次安装并启用扩展后，已经打开的标签页需要刷新页面才能注入内容脚本，从而启用搜索功能 。解决方案是刷新当前页面或关闭后重新打开标签页，再次按快捷键即可正常使用。新打开的页面不受影响，可直接搜索。
 - __Q：为什么有时搜索结果不准确？__  <br />A：可能是搜索规则设置导致的。请打开扩展设置，检查“查找规则”选项，确认启用了您需要的匹配字段（标题、父文件夹标题、URL）。如果书签过多也可能排序导致部分匹配项不明显。您可以输入更精准的关键词组合或在结果列表中上下移动查看。
 - __Q：为什么在有些页面无法通过快捷键打开搜索框__  <br />A：某些页面下因为 Chrome 扩展的机制导致的限制无法操作DOM，比如 `Chrome设置页面`、`扩展程序页面`、`空白页面（about:blank）`。这些页面下无法打开搜索框。
