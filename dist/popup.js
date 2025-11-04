@@ -12,7 +12,7 @@ var P0;
 function jh() {
   if (P0) return me;
   P0 = 1;
-  var _ = Symbol.for("react.transitional.element"), q = Symbol.for("react.fragment");
+  var _ = Symbol.for("react.transitional.element"), p = Symbol.for("react.fragment");
   function U(h, V, F) {
     var I = null;
     if (F !== void 0 && (I = "" + F), V.key !== void 0 && (I = "" + V.key), "key" in V) {
@@ -28,7 +28,7 @@ function jh() {
       props: F
     };
   }
-  return me.Fragment = q, me.jsx = U, me.jsxs = U, me;
+  return me.Fragment = p, me.jsx = U, me.jsxs = U, me;
 }
 var ld;
 function Ch() {
@@ -48,7 +48,7 @@ var td;
 function Xh() {
   if (td) return Z;
   td = 1;
-  var _ = Symbol.for("react.transitional.element"), q = Symbol.for("react.portal"), U = Symbol.for("react.fragment"), h = Symbol.for("react.strict_mode"), V = Symbol.for("react.profiler"), F = Symbol.for("react.consumer"), I = Symbol.for("react.context"), k = Symbol.for("react.forward_ref"), O = Symbol.for("react.suspense"), T = Symbol.for("react.memo"), N = Symbol.for("react.lazy"), W = Symbol.iterator;
+  var _ = Symbol.for("react.transitional.element"), p = Symbol.for("react.portal"), U = Symbol.for("react.fragment"), h = Symbol.for("react.strict_mode"), V = Symbol.for("react.profiler"), F = Symbol.for("react.consumer"), I = Symbol.for("react.context"), k = Symbol.for("react.forward_ref"), O = Symbol.for("react.suspense"), T = Symbol.for("react.memo"), N = Symbol.for("react.lazy"), W = Symbol.iterator;
   function P(s) {
     return s === null || typeof s != "object" ? null : (s = W && s[W] || s["@@iterator"], typeof s == "function" ? s : null);
   }
@@ -63,26 +63,26 @@ function Xh() {
     enqueueSetState: function() {
     }
   }, Nl = Object.assign, Jl = {};
-  function p(s, A, M) {
+  function q(s, A, M) {
     this.props = s, this.context = A, this.refs = Jl, this.updater = M || Ul;
   }
-  p.prototype.isReactComponent = {}, p.prototype.setState = function(s, A) {
+  q.prototype.isReactComponent = {}, q.prototype.setState = function(s, A) {
     if (typeof s != "object" && typeof s != "function" && s != null)
       throw Error(
         "takes an object of state variables to update or a function which returns an object of state variables."
       );
     this.updater.enqueueSetState(this, s, A, "setState");
-  }, p.prototype.forceUpdate = function(s) {
+  }, q.prototype.forceUpdate = function(s) {
     this.updater.enqueueForceUpdate(this, s, "forceUpdate");
   };
   function rl() {
   }
-  rl.prototype = p.prototype;
+  rl.prototype = q.prototype;
   function vl(s, A, M) {
     this.props = s, this.context = A, this.refs = Jl, this.updater = M || Ul;
   }
   var cl = vl.prototype = new rl();
-  cl.constructor = vl, Nl(cl, p.prototype), cl.isPureReactComponent = !0;
+  cl.constructor = vl, Nl(cl, q.prototype), cl.isPureReactComponent = !0;
   var gl = Array.isArray, j = { H: null, A: null, T: null, S: null, V: null }, El = Object.prototype.hasOwnProperty;
   function hl(s, A, M, z, B, ll) {
     return M = ll.ref, {
@@ -156,7 +156,7 @@ function Xh() {
         case "object":
           switch (s.$$typeof) {
             case _:
-            case q:
+            case p:
               Q = !0;
               break;
             case N:
@@ -282,7 +282,7 @@ function Xh() {
         );
       return s;
     }
-  }, Z.Component = p, Z.Fragment = U, Z.Profiler = V, Z.PureComponent = vl, Z.StrictMode = h, Z.Suspense = O, Z.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = j, Z.__COMPILER_RUNTIME = {
+  }, Z.Component = q, Z.Fragment = U, Z.Profiler = V, Z.PureComponent = vl, Z.StrictMode = h, Z.Suspense = O, Z.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = j, Z.__COMPILER_RUNTIME = {
     __proto__: null,
     c: function(s) {
       return j.H.useMemoCache(s);
@@ -428,7 +428,7 @@ var al = ni(), Pf = { exports: {} }, ge = {}, li = { exports: {} }, ti = {};
 var ad;
 function Qh() {
   return ad || (ad = 1, (function(_) {
-    function q(S, D) {
+    function p(S, D) {
       var G = S.length;
       S.push(D);
       l: for (; 0 < G; ) {
@@ -472,12 +472,12 @@ function Qh() {
         return I.now() - k;
       };
     }
-    var O = [], T = [], N = 1, W = null, P = 3, Ul = !1, Nl = !1, Jl = !1, p = !1, rl = typeof setTimeout == "function" ? setTimeout : null, vl = typeof clearTimeout == "function" ? clearTimeout : null, cl = typeof setImmediate < "u" ? setImmediate : null;
+    var O = [], T = [], N = 1, W = null, P = 3, Ul = !1, Nl = !1, Jl = !1, q = !1, rl = typeof setTimeout == "function" ? setTimeout : null, vl = typeof clearTimeout == "function" ? clearTimeout : null, cl = typeof setImmediate < "u" ? setImmediate : null;
     function gl(S) {
       for (var D = U(T); D !== null; ) {
         if (D.callback === null) h(T);
         else if (D.startTime <= S)
-          h(T), D.sortIndex = D.expirationTime, q(O, D);
+          h(T), D.sortIndex = D.expirationTime, p(O, D);
         else break;
         D = U(T);
       }
@@ -493,10 +493,10 @@ function Qh() {
     }
     var El = !1, hl = -1, ml = 5, Hl = -1;
     function wl() {
-      return p ? !0 : !(_.unstable_now() - Hl < ml);
+      return q ? !0 : !(_.unstable_now() - Hl < ml);
     }
     function Bl() {
-      if (p = !1, El) {
+      if (q = !1, El) {
         var S = _.unstable_now();
         Hl = S;
         var D = !0;
@@ -586,7 +586,7 @@ function Qh() {
         P = G;
       }
     }, _.unstable_requestPaint = function() {
-      p = !0;
+      q = !0;
     }, _.unstable_runWithPriority = function(S, D) {
       switch (S) {
         case 1:
@@ -630,7 +630,7 @@ function Qh() {
         startTime: G,
         expirationTime: s,
         sortIndex: -1
-      }, G > ol ? (S.sortIndex = G, q(T, S), U(O) === null && S === U(T) && (Jl ? (vl(hl), hl = -1) : Jl = !0, Zl(j, G - ol))) : (S.sortIndex = s, q(O, S), Nl || Ul || (Nl = !0, El || (El = !0, zl()))), S;
+      }, G > ol ? (S.sortIndex = G, p(T, S), U(O) === null && S === U(T) && (Jl ? (vl(hl), hl = -1) : Jl = !0, Zl(j, G - ol))) : (S.sortIndex = s, p(O, S), Nl || Ul || (Nl = !0, El || (El = !0, zl()))), S;
     }, _.unstable_shouldYield = wl, _.unstable_wrapCallback = function(S) {
       var D = P;
       return function() {
@@ -664,7 +664,7 @@ function Vh() {
   if (nd) return Kl;
   nd = 1;
   var _ = ni();
-  function q(O) {
+  function p(O) {
     var T = "https://react.dev/errors/" + O;
     if (1 < arguments.length) {
       T += "?args[]=" + encodeURIComponent(arguments[1]);
@@ -679,7 +679,7 @@ function Vh() {
     d: {
       f: U,
       r: function() {
-        throw Error(q(522));
+        throw Error(p(522));
       },
       D: U,
       C: U,
@@ -711,7 +711,7 @@ function Vh() {
   return Kl.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = h, Kl.createPortal = function(O, T) {
     var N = 2 < arguments.length && arguments[2] !== void 0 ? arguments[2] : null;
     if (!T || T.nodeType !== 1 && T.nodeType !== 9 && T.nodeType !== 11)
-      throw Error(q(299));
+      throw Error(p(299));
     return F(O, T, null, N);
   }, Kl.flushSync = function(O) {
     var T = I.T, N = h.p;
@@ -800,8 +800,8 @@ function Lh() {
     if (!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ > "u" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE != "function"))
       try {
         __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(_);
-      } catch (q) {
-        console.error(q);
+      } catch (p) {
+        console.error(p);
       }
   }
   return _(), ui.exports = Vh(), ui.exports;
@@ -819,7 +819,7 @@ var fd;
 function Kh() {
   if (fd) return ge;
   fd = 1;
-  var _ = Zh(), q = ni(), U = Lh();
+  var _ = Zh(), p = ni(), U = Lh();
   function h(l) {
     var t = "https://react.dev/errors/" + l;
     if (1 < arguments.length) {
@@ -921,7 +921,7 @@ function Kh() {
     }
     return null;
   }
-  var N = Object.assign, W = Symbol.for("react.element"), P = Symbol.for("react.transitional.element"), Ul = Symbol.for("react.portal"), Nl = Symbol.for("react.fragment"), Jl = Symbol.for("react.strict_mode"), p = Symbol.for("react.profiler"), rl = Symbol.for("react.provider"), vl = Symbol.for("react.consumer"), cl = Symbol.for("react.context"), gl = Symbol.for("react.forward_ref"), j = Symbol.for("react.suspense"), El = Symbol.for("react.suspense_list"), hl = Symbol.for("react.memo"), ml = Symbol.for("react.lazy"), Hl = Symbol.for("react.activity"), wl = Symbol.for("react.memo_cache_sentinel"), Bl = Symbol.iterator;
+  var N = Object.assign, W = Symbol.for("react.element"), P = Symbol.for("react.transitional.element"), Ul = Symbol.for("react.portal"), Nl = Symbol.for("react.fragment"), Jl = Symbol.for("react.strict_mode"), q = Symbol.for("react.profiler"), rl = Symbol.for("react.provider"), vl = Symbol.for("react.consumer"), cl = Symbol.for("react.context"), gl = Symbol.for("react.forward_ref"), j = Symbol.for("react.suspense"), El = Symbol.for("react.suspense_list"), hl = Symbol.for("react.memo"), ml = Symbol.for("react.lazy"), Hl = Symbol.for("react.activity"), wl = Symbol.for("react.memo_cache_sentinel"), Bl = Symbol.iterator;
   function zl(l) {
     return l === null || typeof l != "object" ? null : (l = Bl && l[Bl] || l["@@iterator"], typeof l == "function" ? l : null);
   }
@@ -934,7 +934,7 @@ function Kh() {
     switch (l) {
       case Nl:
         return "Fragment";
-      case p:
+      case q:
         return "Profiler";
       case Jl:
         return "StrictMode";
@@ -967,7 +967,7 @@ function Kh() {
       }
     return null;
   }
-  var Zl = Array.isArray, S = q.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, D = U.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, G = {
+  var Zl = Array.isArray, S = p.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, D = U.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, G = {
     pending: !1,
     data: null,
     method: null,
@@ -2397,8 +2397,8 @@ Error generating stack: ` + u.message + `
         case Jl:
           c = 8, e |= 24;
           break;
-        case p:
-          return l = et(12, u, t, e | 2), l.elementType = p, l.lanes = n, l;
+        case q:
+          return l = et(12, u, t, e | 2), l.elementType = q, l.lanes = n, l;
         case j:
           return l = et(13, u, t, e), l.elementType = j, l.lanes = n, l;
         case El:
@@ -10139,7 +10139,7 @@ Error generating stack: ` + u.message + `
       hu.splice(u, 0, l), u === 0 && W0(l);
     }
   };
-  var I0 = q.version;
+  var I0 = p.version;
   if (I0 !== "19.1.1")
     throw Error(
       h(
@@ -10215,21 +10215,21 @@ function Jh() {
     if (!(typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ > "u" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE != "function"))
       try {
         __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(_);
-      } catch (q) {
-        console.error(q);
+      } catch (p) {
+        console.error(p);
       }
   }
   return _(), Pf.exports = Kh(), Pf.exports;
 }
 var wh = Jh();
 const kh = () => {
-  const [_, q] = al.useState({
+  const [_, p] = al.useState({
     openNewTab: "1",
     searchRule: ["url", "title", "parentTitle"],
     useDefaultSearch: "0"
   }), U = async () => {
     const h = await chrome.storage.local.get("searchBookmarkSetting");
-    h.searchBookmarkSetting && q({
+    h.searchBookmarkSetting && p({
       ..._,
       ...h.searchBookmarkSetting
     });
@@ -10240,12 +10240,12 @@ const kh = () => {
     setting: _
   };
 }, sd = "bookMarkSearch", Wh = 10, $h = (_) => {
-  const q = new URL(chrome.runtime.getURL("/_favicon/"));
-  return q.searchParams.set("pageUrl", _), q.searchParams.set("size", "24"), q.toString();
-}, hd = (_, q = "") => {
+  const p = new URL(chrome.runtime.getURL("/_favicon/"));
+  return p.searchParams.set("pageUrl", _), p.searchParams.set("size", "24"), p.toString();
+}, hd = (_, p = "") => {
   const U = [];
   for (const h of _) {
-    const V = q ? `${q}/${h.title}` : h.title;
+    const V = p ? `${p}/${h.title}` : h.title;
     h.url && h.title ? U.push({
       url: h.url,
       title: h.title,
@@ -10265,20 +10265,20 @@ const kh = () => {
     return console.error(_), [];
   }
 }, Ih = () => new Promise((_) => {
-  chrome.storage.local.get(sd, (q) => {
-    _(q[sd] || []);
+  chrome.storage.local.get(sd, (p) => {
+    _(p[sd] || []);
   });
-}), Ph = (_, q) => _ && q ? q.toLowerCase().includes(_.toLowerCase()) : !1, od = (_) => _ ? new URL(_).hostname : "", yd = () => {
+}), Ph = (_, p) => _ && p ? p.toLowerCase().includes(_.toLowerCase()) : !1, od = (_) => _ ? new URL(_).hostname : "", yd = () => {
   window.close();
 }, ly = () => {
-  const [_, q] = al.useState([]), [U, h] = al.useState([]), [V, F] = al.useState(!1), [I, k] = al.useState(""), [O, T] = al.useState([]), [N, W] = al.useState(""), { setting: P } = kh();
+  const [_, p] = al.useState([]), [U, h] = al.useState([]), [V, F] = al.useState(!1), [I, k] = al.useState(""), [O, T] = al.useState([]), [N, W] = al.useState(""), { setting: P } = kh();
   al.useEffect(() => {
     if (!I) {
       T(U), W(U[0]?.id || "");
       return;
     }
-    const p = P.searchRule || ["url", "title", "parentTitle"], rl = Array.from({
-      length: p.length
+    const q = P.searchRule || ["url", "title", "parentTitle"], rl = Array.from({
+      length: q.length
     }), vl = /* @__PURE__ */ new Set(), cl = (j) => _.filter((El) => {
       if (vl.has(El.id))
         return !1;
@@ -10295,7 +10295,7 @@ const kh = () => {
       return 0;
     }), gl = rl.reduce(
       (j, El, hl) => {
-        const ml = p[hl], Hl = cl(ml);
+        const ml = q[hl], Hl = cl(ml);
         return Hl.length && j.push(...Hl), j;
       },
       []
@@ -10303,9 +10303,9 @@ const kh = () => {
     T(gl), W(gl[0]?.id || "");
   }, [I, _, U, P.searchRule]), al.useEffect(() => {
     F(!0), Promise.all([Fh(), Ih()]).then(
-      ([p, rl]) => {
-        q(p);
-        const vl = new Map(p.map((gl) => [gl.id, gl])), cl = rl.reduce(
+      ([q, rl]) => {
+        p(q);
+        const vl = new Map(q.map((gl) => [gl.id, gl])), cl = rl.reduce(
           (gl, j) => (vl.has(j) && gl.push(vl.get(j)), gl),
           []
         );
@@ -10321,7 +10321,7 @@ const kh = () => {
     searchBookmarks: O,
     selectedId: N,
     setSelectedId: W,
-    open: async (p, rl) => {
+    open: async (q, rl) => {
       const vl = await chrome.tabs.query({
         active: !0,
         currentWindow: !0
@@ -10330,16 +10330,16 @@ const kh = () => {
         if (Ul)
           return;
         const { useDefaultSearch: j, openNewTab: El } = P;
-        if (!p && I && +j == 1)
+        if (!q && I && +j == 1)
           await chrome.search.query({
             disposition: "NEW_TAB",
             text: I
           });
         else {
-          const hl = _.find((Bl) => Bl.id === p);
+          const hl = _.find((Bl) => Bl.id === q);
           if (!hl)
             return;
-          const ml = [...U], Hl = ml.findIndex((Bl) => Bl.id === p);
+          const ml = [...U], Hl = ml.findIndex((Bl) => Bl.id === q);
           Hl > -1 && ml.splice(Hl, 1), ml.unshift(hl), ml.length > Wh && ml.pop(), h(ml);
           let wl;
           if (!rl && +El == 0) {
@@ -10364,23 +10364,23 @@ const kh = () => {
   };
 };
 function ai(_) {
-  const q = al.useRef(_);
+  const p = al.useRef(_);
   return al.useEffect(() => {
-    q.current = _;
-  }, [_]), q;
+    p.current = _;
+  }, [_]), p;
 }
 const ty = () => {
-  const _ = al.useRef(null), [q, U] = al.useState(!1), h = ai(q), V = al.useRef(null), {
+  const _ = al.useRef(null), [p, U] = al.useState(!1), h = ai(p), V = al.useRef(null), {
     keyword: F,
     setKeyword: I,
     searchBookmarks: k,
     open: O,
     selectedId: T,
     setSelectedId: N
-  } = ly(), W = ai(k), P = ai(T), [Ul, Nl] = al.useState({ top: 0, height: 0 }), Jl = al.useCallback((p) => {
+  } = ly(), W = ai(k), P = ai(T), [Ul, Nl] = al.useState({ top: 0, height: 0 }), Jl = al.useCallback((q) => {
     if (h.current)
       return;
-    if (p.key === "Escape") {
+    if (q.key === "Escape") {
       yd();
       return;
     }
@@ -10388,13 +10388,13 @@ const ty = () => {
       (vl) => vl.id === P.current
     );
     if (rl > -1) {
-      if (p.key === "ArrowUp") {
+      if (q.key === "ArrowUp") {
         const vl = rl === 0 ? W.current.length - 1 : rl - 1;
-        N(W.current[vl].id), p.preventDefault();
+        N(W.current[vl].id), q.preventDefault();
       }
-      if (p.key === "ArrowDown") {
+      if (q.key === "ArrowDown") {
         const vl = rl === W.current.length - 1 ? 0 : rl + 1;
-        N(W.current[vl].id), p.preventDefault();
+        N(W.current[vl].id), q.preventDefault();
       }
     }
   }, []);
@@ -10406,12 +10406,12 @@ const ty = () => {
   ), () => {
     window.removeEventListener("keydown", Jl);
   }), []), al.useEffect(() => {
-    const p = document.querySelector(`[data-id="${T}"]`);
-    if (p) {
-      const { top: rl, height: vl } = p.getBoundingClientRect(), { top: cl, height: gl } = Ul;
-      rl >= cl ? rl + vl <= cl + gl || p.scrollIntoView({
+    const q = document.querySelector(`[data-id="${T}"]`);
+    if (q) {
+      const { top: rl, height: vl } = q.getBoundingClientRect(), { top: cl, height: gl } = Ul;
+      rl >= cl ? rl + vl <= cl + gl || q.scrollIntoView({
         block: "end"
-      }) : p.scrollIntoView({
+      }) : q.scrollIntoView({
         block: "start"
       });
     }
@@ -10428,44 +10428,44 @@ const ty = () => {
           autoFocus: !0,
           ref: _,
           value: F,
-          onChange: (p) => I(p.target.value),
+          onChange: (q) => I(q.target.value),
           onCompositionStart: () => U(!0),
           onCompositionEnd: () => U(!1),
-          onKeyDown: (p) => {
-            p.key === "Enter" && (O(T, p.metaKey || p.ctrlKey), p.preventDefault());
+          onKeyDown: (q) => {
+            !p && q.key === "Enter" && (O(T, q.metaKey || q.ctrlKey), q.preventDefault());
           }
         }
       )
     ] }),
-    /* @__PURE__ */ X.jsx("div", { className: "search__result-container", children: /* @__PURE__ */ X.jsx("div", { className: "search__list", ref: V, children: k.map((p) => /* @__PURE__ */ X.jsxs(
+    /* @__PURE__ */ X.jsx("div", { className: "search__result-container", children: /* @__PURE__ */ X.jsx("div", { className: "search__list", ref: V, children: k.map((q) => /* @__PURE__ */ X.jsxs(
       "div",
       {
-        onClick: (rl) => O(p.id, rl.metaKey || rl.ctrlKey),
-        className: `search__list-item ${T === p.id ? "search__list-item-active" : ""}`,
-        "data-id": p.id,
-        title: p.title,
+        onClick: (rl) => O(q.id, rl.metaKey || rl.ctrlKey),
+        className: `search__list-item ${T === q.id ? "search__list-item-active" : ""}`,
+        "data-id": q.id,
+        title: q.title,
         children: [
-          p.faviconURL && /* @__PURE__ */ X.jsx(
+          q.faviconURL && /* @__PURE__ */ X.jsx(
             "img",
             {
               className: "search__list-item-favicon",
-              src: p.faviconURL,
-              alt: p.title
+              src: q.faviconURL,
+              alt: q.title
             }
           ),
-          p.title
+          q.title
         ]
       },
-      p.id
+      q.id
     )) }) })
   ] });
 }, uy = ({
   name: _,
-  value: q,
+  value: p,
   onChange: U,
   options: h
 }) => {
-  const [V, F] = al.useState(q), I = (k) => {
+  const [V, F] = al.useState(p), I = (k) => {
     const O = V.includes(k) ? V.filter((T) => T !== k) : [...V, k];
     F(O), U?.(O);
   };
@@ -10484,12 +10484,12 @@ const ty = () => {
   ] }) })) });
 }, ei = ({
   label: _,
-  tips: q,
+  tips: p,
   children: U
 }) => /* @__PURE__ */ X.jsxs("div", { className: "form-item", children: [
   /* @__PURE__ */ X.jsxs("div", { className: "form-item__label", children: [
     _,
-    q && /* @__PURE__ */ X.jsx("span", { className: "form-item__tips", children: q })
+    p && /* @__PURE__ */ X.jsx("span", { className: "form-item__tips", children: p })
   ] }),
   /* @__PURE__ */ X.jsx("div", { className: "form-item__content", children: U })
 ] }), rd = al.createContext({
@@ -10499,7 +10499,7 @@ const ty = () => {
   }
 }), dd = ({
   children: _,
-  name: q,
+  name: p,
   value: U,
   onChange: h
 }) => {
@@ -10509,13 +10509,13 @@ const ty = () => {
   return /* @__PURE__ */ X.jsx(
     rd.Provider,
     {
-      value: { value: V, name: q, onChange: I },
+      value: { value: V, name: p, onChange: I },
       children: /* @__PURE__ */ X.jsx("div", { className: "radio-group", children: _ })
     }
   );
 }, Bn = ({
   value: _,
-  children: q
+  children: p
 }) => {
   const { value: U, name: h, onChange: V } = al.useContext(rd);
   return /* @__PURE__ */ X.jsxs("label", { className: "radio", children: [
@@ -10529,10 +10529,10 @@ const ty = () => {
         onChange: (F) => V(F.target.value)
       }
     ),
-    /* @__PURE__ */ X.jsx("span", { children: q })
+    /* @__PURE__ */ X.jsx("span", { children: p })
   ] });
 }, ay = () => {
-  const [_, q] = al.useState(!0), [U, h] = al.useState({
+  const [_, p] = al.useState(!0), [U, h] = al.useState({
     openNewTab: "1",
     searchRule: ["url", "title", "parentTitle"],
     useDefaultSearch: "0"
@@ -10555,7 +10555,7 @@ const ty = () => {
   };
   return al.useEffect(() => {
     chrome.storage.local.get("searchBookmarkSetting", (O) => {
-      O.searchBookmarkSetting && h({ ...U, ...O.searchBookmarkSetting }), q(!1);
+      O.searchBookmarkSetting && h({ ...U, ...O.searchBookmarkSetting }), p(!1);
     });
   }, []), !_ && /* @__PURE__ */ X.jsxs("div", { className: "setting__container", children: [
     /* @__PURE__ */ X.jsxs("div", { className: "setting__content", children: [
@@ -10620,13 +10620,13 @@ const ty = () => {
     component: /* @__PURE__ */ X.jsx(ay, {})
   }
 ], ey = () => {
-  const [_, q] = al.useState("search");
+  const [_, p] = al.useState("search");
   return /* @__PURE__ */ X.jsxs("div", { className: "layout__container", children: [
     /* @__PURE__ */ X.jsx("div", { className: "layout__header", children: vd.map((U) => /* @__PURE__ */ X.jsx(
       "div",
       {
         className: `layout__tab ${U.key === _ ? "active" : ""}`,
-        onClick: () => q(U.key),
+        onClick: () => p(U.key),
         children: U.name
       },
       U.key

@@ -119,7 +119,7 @@ export const Search = () => {
           onCompositionStart={() => setIsComposition(true)}
           onCompositionEnd={() => setIsComposition(false)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (!isComposition && e.key === "Enter") {
               void open(selectedId, e.metaKey || e.ctrlKey);
               e.preventDefault();
             }
