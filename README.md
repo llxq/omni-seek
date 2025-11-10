@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-`Bookmark Search` 是一个轻量级的 Chrome 扩展，帮助您通过快捷键快速搜索和访问浏览器书签。支持模糊搜索、文件夹层级搜索和自定义搜索规则。
+`Bookmark Search` 是一款轻量级 `Chrome 扩展`，让您通过 `Ctrl/⌘ + K` 快速搜索和访问书签。它支持模糊搜索、文件夹层级导航、保存搜索历史和高度自定义设置。此外，还提供独特的临时书签管理功能，让您保存网页而不污染主书签列表。
 
 ![Demo](https://github.com/user-attachments/assets/3cf53211-f0a1-491d-9d83-e7c834ef3c07)
 
