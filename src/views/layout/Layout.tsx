@@ -19,7 +19,7 @@ const layoutTabs = [
     component: <Setting />,
   },
   {
-    name: "临时数据",
+    name: "临时书签",
     key: "temporary",
     component: <TemporaryData />,
   },
