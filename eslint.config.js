@@ -22,6 +22,7 @@ export default tseslint.config([
     rules: {
       "no-async-promise-executor": "off",
       "react-hooks/exhaustive-deps": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
     },
   },
 ]);

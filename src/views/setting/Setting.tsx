@@ -60,8 +60,8 @@ export const Setting = () => {
               value={formData.openNewTab}
               onChange={(value) => updateFormData({ openNewTab: value })}
             >
-              <Radio value="0">是（通过匹配域名查找已打开页面）</Radio>
-              <Radio value="1">否</Radio>
+              <Radio value="1">是（通过匹配域名查找已打开页面）</Radio>
+              <Radio value="0">否</Radio>
             </RadioGroup>
           </FormItem>
           <FormItem label="搜索规则">

@@ -60,12 +60,13 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        border-radius: 4px;
       }
 
       .search__list-item:hover,
       .search__list-item-active {
-        background-color: #E8F8FF;
-        color: #158DFF;
+        background-color: var(--item-hover-bg-color);
+        color: var(--item-active-color);
       }
 
       .search__list-item-favicon {

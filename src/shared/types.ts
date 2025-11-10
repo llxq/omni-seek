@@ -3,8 +3,12 @@ export interface IBookmark {
   title: string;
   id: string;
   parentId?: string;
-  parentTitle: string;
+  parentTitle?: string;
   faviconURL: string;
+}
+
+export interface ITemporaryData extends IBookmark {
+  createdTime: number;
 }
 
 export type TSearchRule = keyof IBookmark;

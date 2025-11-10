@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { sendGetTemporaryDataEvent } from "../../shared/event.ts";
 import type { IBookmark, TSearchRule } from "../../shared/types.ts";
 import { useSearchSetting } from "./useSearchSetting.ts";
 
@@ -60,7 +61,11 @@ const processBookmarks = (
  */
 const getBookmarks = async () => {
   try {
-    return processBookmarks(await chrome.bookmarks.getTree());
+    const [bookmarks, userTemplateData] = await Promise.all([
+      processBookmarks(await chrome.bookmarks.getTree()),
+      sendGetTemporaryDataEvent(),
+    ]);
+    return [...bookmarks, ...userTemplateData];
   } catch (e) {
     console.error(e);
     return [];
