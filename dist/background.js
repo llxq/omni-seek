@@ -1,17 +1,17 @@
-const m = "bookmark-search_db";
+const g = "bookmark-search_db";
 const c = "bookmarks";
-class h {
+class E {
   db;
   open() {
     return this.db ? Promise.resolve(this.db) : new Promise((e, t) => {
-      const o = indexedDB.open(m, 1);
-      o.onerror = (n) => {
-        t(n.target.error);
-      }, o.onsuccess = (n) => {
-        this.db = n.target.result, e(this.db);
-      }, o.onupgradeneeded = (n) => {
-        const r = n.target.result;
-        r.objectStoreNames.contains(c) || r.createObjectStore(c, { keyPath: "id" }).createIndex("id", "id", { unique: !0 });
+      const n = indexedDB.open(g, 1);
+      n.onerror = (s) => {
+        t(s.target.error);
+      }, n.onsuccess = (s) => {
+        this.db = s.target.result, e(this.db);
+      }, n.onupgradeneeded = (s) => {
+        const o = s.target.result;
+        o.objectStoreNames.contains(c) || o.createObjectStore(c, { keyPath: "id" }).createIndex("id", "id", { unique: !0 });
       };
     });
   }
@@ -23,44 +23,62 @@ class h {
   }
   async add(e) {
     const t = await this._getStore("readwrite");
-    return new Promise((o, n) => {
-      const r = t.add({
+    return new Promise((n, s) => {
+      const o = t.add({
         ...e,
         createdTime: Date.now()
       });
-      r.onsuccess = (s) => o(s.target.result), r.onerror = (s) => n(s.target.error);
+      o.onsuccess = (a) => n(a.target.result), o.onerror = (a) => s(a.target.error);
     });
   }
   async get(e) {
     const t = await this._getStore("readonly");
-    return new Promise((o, n) => {
-      const r = t.get(e);
-      r.onsuccess = (s) => o(s.target.result), r.onerror = (s) => n(s.target.error);
+    return new Promise((n, s) => {
+      const o = t.get(e);
+      o.onsuccess = (a) => n(a.target.result), o.onerror = (a) => s(a.target.error);
     });
   }
   async getAll() {
     const e = await this._getStore("readonly");
-    return new Promise((t, o) => {
-      const n = e.getAll();
-      n.onsuccess = (r) => t(r.target.result), n.onerror = (r) => o(r.target.error);
+    return new Promise((t, n) => {
+      const s = e.getAll();
+      s.onsuccess = (o) => t(o.target.result), s.onerror = (o) => n(o.target.error);
     });
   }
   async delete(e) {
     const t = await this._getStore("readwrite");
-    return new Promise((o, n) => {
-      const r = t.delete(e);
-      r.onsuccess = () => o(!0), r.onerror = (s) => n(s.target.error);
+    return new Promise((n, s) => {
+      const o = t.delete(e);
+      o.onsuccess = () => n(!0), o.onerror = (a) => s(a.target.error);
     });
   }
 }
-const d = new h(), _ = (a, e = "提示") => {
+const d = new E(), u = (r, e = "提示") => {
   chrome.notifications.create({
     type: "basic",
     iconUrl: "icons/icon.png",
     title: e,
-    message: a
+    message: r
   });
-}, g = "GET_USER_TEMPORARY_DATA", i = "add_temporary_data", u = "add_default_data", l = "add_custom_data", E = "popup_type", T = () => {
+}, T = "GET_USER_TEMPORARY_DATA", i = "add_temporary_data", l = "add_default_data", m = "add_custom_data", p = "popup_type", _ = (r) => ({
+  url: r.url,
+  title: r.title,
+  id: `${r.id}_${Date.now()}`,
+  parentId: "",
+  parentTitle: "",
+  faviconURL: r.favIconUrl || ""
+}), h = (r, e) => {
+  chrome.storage.local.set({
+    [p]: {
+      ...r,
+      _t: Date.now()
+    }
+  }).then(() => {
+    chrome.action.openPopup({
+      windowId: e.windowId
+    });
+  });
+}, w = () => {
   chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.removeAll(() => {
       chrome.contextMenus.create({
@@ -68,55 +86,51 @@ const d = new h(), _ = (a, e = "提示") => {
         title: "添加到书签搜索项",
         contexts: ["all"]
       }), chrome.contextMenus.create({
-        id: u,
+        id: l,
         title: "使用当前网站名称添加",
         parentId: i,
         contexts: ["all"]
       }), chrome.contextMenus.create({
-        id: l,
+        id: m,
         title: "自定义名称添加",
         parentId: i,
         contexts: ["all"]
       });
     });
-  }), chrome.contextMenus.onClicked.addListener((a, e) => {
+  }), chrome.contextMenus.onClicked.addListener((r, e) => {
     if (e) {
-      const t = {
-        url: e.url,
-        title: e.title,
-        id: `${e.id}_${Date.now()}`,
-        parentId: "",
-        parentTitle: "",
-        faviconURL: e.favIconUrl || ""
-      };
-      a.menuItemId === u ? d.add(t).then(() => {
-        _("添加成功");
-      }) : a.menuItemId === l && chrome.storage.local.set({
-        [E]: {
-          ...t,
-          _t: Date.now()
-        }
-      }).then(() => {
-        chrome.action.openPopup({
-          windowId: e.windowId
-        });
-      });
+      const t = _(e);
+      r.menuItemId === l ? d.add(t).then(() => {
+        u("添加成功");
+      }) : r.menuItemId === m && h(t, e);
     }
   });
-}, p = () => {
-  chrome.runtime.onMessage.addListener((a, e, t) => {
-    if (a.type === g)
-      return d.getAll().then((o) => {
-        t({ data: o });
+}, S = () => {
+  chrome.commands.onCommand.addListener((r) => {
+    r === "add_temporary_bookmark" && chrome.tabs.query({ active: !0, currentWindow: !0 }).then((e) => {
+      const [t] = e;
+      if (!t) {
+        u("无法获取当前tab，请刷新重试");
+        return;
+      }
+      chrome.runtime.lastError ? console.log(chrome.runtime.lastError.message) : h(_(t), t);
+    });
+  });
+}, b = () => {
+  chrome.runtime.onMessage.addListener((r, e, t) => {
+    if (r.type === T)
+      return d.getAll().then((n) => {
+        t({ data: n });
       }), !0;
   });
-}, w = "SET_USER_TEMPORARY_DATA", A = () => {
-  chrome.runtime.onMessage.addListener(({ type: a, data: e }) => {
-    a === w && d.add(e).then(() => {
-      _("保存成功");
+}, D = "SET_USER_TEMPORARY_DATA", y = () => {
+  chrome.runtime.onMessage.addListener(({ type: r, data: e }) => {
+    r === D && d.add(e).then(() => {
+      u("保存成功");
     });
   });
 };
-T();
-p();
-A();
+S();
+w();
+b();
+y();

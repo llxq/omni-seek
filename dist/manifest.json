@@ -31,7 +31,15 @@
         "default": "Ctrl+K",
         "mac": "Command+K"
       },
-      "description": "open search and setting page",
+      "description": "打开书签搜索",
+      "global": true
+    },
+    "add_temporary_bookmark": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      },
+      "description": "将当前页面添加为临时书签",
       "global": true
     }
   },

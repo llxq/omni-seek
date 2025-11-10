@@ -31,6 +31,45 @@ const CONTEXT_MENU_CUSTOM_ID = "add_custom_data";
  */
 export const POPUP_TYPE_KEY = "popup_type";
 
+/**
+ * 根据tab创建书签数据
+ * @param tab
+ */
+const createBookmarkByTab = (tab: chrome.tabs.Tab) => {
+  return {
+    url: tab.url!,
+    title: tab.title!,
+    id: `${tab.id}_${Date.now()}`,
+    parentId: "",
+    parentTitle: "",
+    faviconURL: tab.favIconUrl || "",
+  };
+};
+
+/**
+ * 打开设置临时数据的页面
+ * @param temporaryData
+ * @param tab
+ */
+const openSetTemporaryDataPage = (
+  temporaryData: IBookmark,
+  tab: chrome.tabs.Tab,
+) => {
+  chrome.storage.local
+    .set({
+      [POPUP_TYPE_KEY]: {
+        ...temporaryData,
+        _t: Date.now(),
+      },
+    })
+    .then(() => {
+      // 先关闭
+      chrome.action.openPopup({
+        windowId: tab.windowId,
+      });
+    });
+};
+
 /*
  * 注册右键菜单
  */
@@ -60,33 +99,36 @@ export const registerContextMenu = () => {
 
   chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (tab) {
-      const temporaryData: IBookmark = {
-        url: tab.url!,
-        title: tab.title!,
-        id: `${tab.id}_${Date.now()}`,
-        parentId: "",
-        parentTitle: "",
-        faviconURL: tab.favIconUrl || "",
-      };
+      const temporaryData: IBookmark = createBookmarkByTab(tab);
       if (info.menuItemId === CONTEXT_MENU_DEFAULT_ID) {
         db.add(temporaryData).then(() => {
           createNotification("添加成功");
         });
       } else if (info.menuItemId === CONTEXT_MENU_CUSTOM_ID) {
-        chrome.storage.local
-          .set({
-            [POPUP_TYPE_KEY]: {
-              ...temporaryData,
-              _t: Date.now(),
-            },
-          })
-          .then(() => {
-            // 先关闭
-            chrome.action.openPopup({
-              windowId: tab.windowId,
-            });
-          });
+        openSetTemporaryDataPage(temporaryData, tab);
       }
+    }
+  });
+};
+
+/**
+ * 注册快捷键监听
+ */
+export const registerShortcut = () => {
+  chrome.commands.onCommand.addListener((command) => {
+    if (command === "add_temporary_bookmark") {
+      chrome.tabs.query({ active: true, currentWindow: true }).then((res) => {
+        const [tab] = res;
+        if (!tab) {
+          createNotification("无法获取当前tab，请刷新重试");
+          return;
+        }
+        if (chrome.runtime.lastError) {
+          console.log(chrome.runtime.lastError.message);
+        } else {
+          openSetTemporaryDataPage(createBookmarkByTab(tab), tab);
+        }
+      });
     }
   });
 };

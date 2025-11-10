@@ -38,6 +38,11 @@ export const AddTemporary = ({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="add-temporary__input"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              confirm();
+            }
+          }}
         />
       </div>
       <div className="add-temporary__operation">
