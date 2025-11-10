@@ -189,6 +189,13 @@ export const SET_USER_TEMPORARY_DATA = "SET_USER_TEMPORARY_DATA";
 export const onSetUserTemporaryData = () => {
   chrome.runtime.onMessage.addListener(({ type, data }) => {
     if (type === SET_USER_TEMPORARY_DATA) {
+      if (data.createdTime) {
+        // 修改
+        db.update(data).then(() => {
+          createNotification("修改成功");
+        });
+        return;
+      }
       db.add(data).then(() => {
         createNotification("保存成功");
       });

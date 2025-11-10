@@ -80,6 +80,16 @@ export class Db {
     });
   }
 
+  public async update(data: IBookmark): Promise<string> {
+    const store = await this._getStore("readwrite");
+    return new Promise((resolve, reject) => {
+      const request = store.put(data);
+      request.onsuccess = (event) =>
+        resolve((event.target as IDBRequest).result);
+      request.onerror = (event) => reject((event.target as IDBRequest).error);
+    });
+  }
+
   public async delete(key: string): Promise<boolean> {
     const store = await this._getStore("readwrite");
     return new Promise((resolve, reject) => {

@@ -5,7 +5,11 @@ import { createNotification } from "../../shared/notice.ts";
 import type { ITemporaryData } from "../../shared/types.ts";
 import "./temporary-data.scss";
 
-export const TemporaryData = () => {
+export const TemporaryData = ({
+  setTemporaryData,
+}: {
+  setTemporaryData: (data: ITemporaryData) => void;
+}) => {
   const [temporaryList, setTemporaryList] = useState<ITemporaryData[]>([]);
 
   useEffect(() => {
@@ -25,8 +29,20 @@ export const TemporaryData = () => {
     if (!time) {
       return "";
     }
+    // 补0
+    const padZero = (num: number) => {
+      return num < 10 ? `0${num}` : `${num}`;
+    };
     const date = new Date(time);
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    return `${date.getFullYear()}-${padZero(
+      date.getMonth() + 1,
+    )}-${padZero(date.getDate())} ${padZero(date.getHours())}:${padZero(
+      date.getMinutes(),
+    )}:${padZero(date.getSeconds())}`;
+  };
+
+  const editData = (data: ITemporaryData) => {
+    setTemporaryData(data);
   };
 
   return temporaryList.length ? (
@@ -39,6 +55,11 @@ export const TemporaryData = () => {
                 className="temporary-data__list-item"
                 key={item.id}
                 title={item.title}
+                onClick={() => {
+                  chrome.tabs.create({
+                    url: item.url,
+                  });
+                }}
               >
                 {item.faviconURL && (
                   <img
@@ -52,7 +73,13 @@ export const TemporaryData = () => {
               <div className="create-time">{formatTime(item.createdTime)}</div>
               <div className="temporary-data__item-operation">
                 <div
-                  className="delete-btn"
+                  className="edit-btn is-button"
+                  onClick={() => editData(item)}
+                >
+                  编辑
+                </div>
+                <div
+                  className="delete-btn is-button"
                   onClick={() => deleteTemporaryData(item)}
                 >
                   删除

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SET_USER_TEMPORARY_DATA } from "../../shared/event.ts";
 import type { IBookmark } from "../../shared/types.ts";
 import "./add-temporary.scss";
 
@@ -17,7 +18,7 @@ export const AddTemporary = ({
 
   const confirm = () => {
     chrome.runtime.sendMessage({
-      type: "SET_USER_TEMPORARY_DATA",
+      type: SET_USER_TEMPORARY_DATA,
       data: {
         ...data,
         title,

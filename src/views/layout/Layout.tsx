@@ -11,17 +11,19 @@ const layoutTabs = [
   {
     name: "搜索",
     key: "search",
-    component: <Search />,
+    component: () => <Search />,
   },
   {
     name: "设置",
     key: "setting",
-    component: <Setting />,
+    component: () => <Setting />,
   },
   {
     name: "临时书签管理",
     key: "temporary",
-    component: <TemporaryData />,
+    component: (setTemporaryData: (data: TUndefinable<IBookmark>) => void) => (
+      <TemporaryData setTemporaryData={setTemporaryData} />
+    ),
   },
 ];
 
@@ -65,7 +67,9 @@ export const Layout = () => {
         })}
       </div>
       <div className="layout__content">
-        {layoutTabs.find((tab) => tab.key === activeTab)?.component}
+        {layoutTabs
+          .find((tab) => tab.key === activeTab)
+          ?.component(setTemporaryData)}
       </div>
     </div>
   );
