@@ -6,49 +6,69 @@
 }
 
 .temporary-data__container {
+  height: 100%;
+  overflow: auto;
+
   .temporary-data__list {
     font-size: 14px;
     color: #333;
     background-color: #fff;
     border-radius: 4px;
-    height: 100%;
-    overflow: auto;
 
     .temporary-data__list-item-wrapper {
       display: flex;
       justify-content: space-between;
 
+      &:hover {
+        background-color: var(--item-hover-bg-color);
+        color: var(--item-active-color);
+      }
+
       .temporary-data__list-item {
-        height: 32px;
-        line-height: 32px;
         padding: 0 8px;
         cursor: pointer;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
         border-radius: 4px;
-        flex: 1;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        column-gap: 8px;
 
-        &:hover {
-          background-color: var(--item-hover-bg-color);
-          color: var(--item-active-color);
+        .favicon__container {
+          img {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-right: 4px;
+          }
         }
 
-        .temporary-data__list-item-favicon {
-          width: 16px;
-          height: 16px;
-          vertical-align: middle;
-          margin-right: 4px;
+        .temporary-data__list-item-content {
+          flex: 1;
+          overflow: hidden;
+          padding: 4px 0;
+
+          .title {
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .url, .created-time {
+            font-size: 12px;
+            color: #999;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .created-time {
+            color: #666;
+            margin-top: 2px;
+          }
         }
+
       }
-    }
-
-    .create-time {
-      width: max-content;
-      line-height: 32px;
-      margin: 0 8px;
-      font-size: 12px;
-      color: #999;
     }
 
     .temporary-data__item-operation {

@@ -62,16 +62,23 @@ export const TemporaryData = ({
                   });
                 }}
               >
-                {item.faviconURL && (
+                <div className="favicon__container">
                   <img
-                    className="temporary-data__list-item-favicon"
-                    src={item.faviconURL}
+                    src={
+                      item.faviconURL ||
+                      chrome.runtime.getURL("icons/default_favicon.png")
+                    }
                     alt={item.title}
                   />
-                )}
-                {item.title}
+                </div>
+                <div className="temporary-data__list-item-content">
+                  <div className="title">{item.title}</div>
+                  <div className="url">{item.url}</div>
+                  <div className="created-time">
+                    {formatTime(item.createdTime)}
+                  </div>
+                </div>
               </div>
-              <div className="create-time">{formatTime(item.createdTime)}</div>
               <div className="temporary-data__item-operation">
                 <div
                   className="edit-btn is-button"

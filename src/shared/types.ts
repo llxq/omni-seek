@@ -5,6 +5,7 @@ export interface IBookmark {
   parentId?: string;
   parentTitle?: string;
   faviconURL: string;
+  isTemporary?: boolean;
 }
 
 export interface ITemporaryData extends IBookmark {

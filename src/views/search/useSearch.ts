@@ -67,7 +67,15 @@ const getBookmarks = async () => {
       processBookmarks(await chrome.bookmarks.getTree()),
       sendGetTemporaryDataEvent(),
     ]);
-    return [...bookmarks, ...userTemplateData];
+    return [
+      ...bookmarks,
+      ...userTemplateData.map((item) => {
+        return {
+          ...item,
+          isTemporary: true,
+        };
+      }),
+    ];
   } catch (e) {
     console.error(e);
     return [];

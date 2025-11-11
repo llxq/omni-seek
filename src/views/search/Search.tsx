@@ -136,14 +136,34 @@ export const Search = () => {
               key={item.id}
               title={item.title}
             >
-              {item.faviconURL && (
+              <div className="favicon__container">
                 <img
-                  className="search__list-item-favicon"
-                  src={item.faviconURL}
+                  src={
+                    item.faviconURL ||
+                    chrome.runtime.getURL("icons/default_favicon.png")
+                  }
                   alt={item.title}
                 />
-              )}
-              {item.title}
+              </div>
+              <div className="search__list-item-content">
+                <div className="title__container">
+                  <div className="title">{item.title}</div>
+                  {item.isTemporary ? (
+                    <div className="is-temporary">临时书签</div>
+                  ) : null}
+                </div>
+                <div className="url">{item.url}</div>
+                {item.parentTitle ? (
+                  <div className="path">
+                    <img
+                      className="icon"
+                      src={chrome.runtime.getURL("icons/dir_icon.png")}
+                      alt="文件夹"
+                    />
+                    {item.parentTitle.split("/").join(" / ")}
+                  </div>
+                ) : null}
+              </div>
             </div>
           ))}
         </div>

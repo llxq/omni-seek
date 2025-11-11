@@ -6,13 +6,15 @@ import { rmSync } from "node:fs";
 const configs = [
   {
     entry: "src/background.ts",
-    fileName: "background",
+    fileName: "background.js",
+    name: "BookmarkSearchBackground",
   },
   {
     entry: "src/views/main.tsx",
     plugins: [react()],
-    fileName: "popup",
+    fileName: "popup.js",
     cssFileName: "popup",
+    name: "BookmarkSearchPopup",
   },
 ];
 
@@ -38,10 +40,26 @@ export default series(
           build: {
             lib: {
               entry: config.entry,
-              formats: ["es"],
-              fileName: config.fileName,
+              name: config.name,
+              formats: isWatch ? ["es"] : ["iife"],
+              fileName: () => config.fileName,
               cssFileName: config.cssFileName,
             },
+            minify: isWatch ? false : "terser",
+            terserOptions: isWatch
+              ? {}
+              : {
+                  compress: {
+                    drop_debugger: true,
+                    drop_console: true,
+                    sequences: true,
+                    dead_code: true,
+                  },
+                  format: {
+                    comments: false,
+                  },
+                  mangle: true,
+                },
             emptyOutDir: false,
             rollupOptions: {
               output: {
