@@ -19,8 +19,7 @@
     "storage",
     "search",
     "notifications",
-    "contextMenus",
-    "sidePanel"
+    "contextMenus"
   ],
   "action": {
     "default_popup": "popup.html"

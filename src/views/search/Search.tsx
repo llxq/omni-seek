@@ -134,7 +134,6 @@ export const Search = () => {
               className={`search__list-item ${selectedId === item.id ? "search__list-item-active" : ""}`}
               data-id={item.id}
               key={item.id}
-              title={item.title}
             >
               <div className="favicon__container">
                 <img
@@ -146,21 +145,29 @@ export const Search = () => {
                 />
               </div>
               <div className="search__list-item-content">
-                <div className="title__container">
-                  <div className="title">{item.title}</div>
+                <div
+                  className={`title__container ${item.isTemporary ? "is-temporary__container" : ""}`}
+                >
+                  <div className="title" title={item.title}>
+                    {item.title}
+                  </div>
                   {item.isTemporary ? (
                     <div className="is-temporary">临时书签</div>
                   ) : null}
                 </div>
-                <div className="url">{item.url}</div>
+                <div className="url" title={item.url}>
+                  {item.url}
+                </div>
                 {item.parentTitle ? (
-                  <div className="path">
+                  <div className="path" title={item.parentTitle}>
                     <img
                       className="icon"
                       src={chrome.runtime.getURL("icons/dir_icon.png")}
                       alt="文件夹"
                     />
-                    {item.parentTitle.split("/").join(" / ")}
+                    <div className="path__label">
+                      {item.parentTitle.split("/").join(" / ")}
+                    </div>
                   </div>
                 ) : null}
               </div>

@@ -11,6 +11,9 @@ export const TemporaryData = ({
   setTemporaryData: (data: ITemporaryData) => void;
 }) => {
   const [temporaryList, setTemporaryList] = useState<ITemporaryData[]>([]);
+  const [showList, setShowList] = useState<ITemporaryData[]>([]);
+  const [keywords, setKeywords] = useState("");
+  const [isComposition, setIsComposition] = useState(false);
 
   useEffect(() => {
     sendGetTemporaryDataEvent().then((data) => {
@@ -46,57 +49,82 @@ export const TemporaryData = ({
     setTemporaryData(data);
   };
 
+  useEffect(() => {
+    !isComposition &&
+      setShowList(
+        temporaryList.filter((item) =>
+          item.title.toLowerCase().includes(keywords.toLowerCase()),
+        ),
+      );
+  }, [keywords, temporaryList, isComposition]);
+
   return temporaryList.length ? (
     <div className="temporary-data__container">
-      <div className="temporary-data__list">
-        {temporaryList.map((item) => {
-          return (
-            <div className="temporary-data__list-item-wrapper">
-              <div
-                className="temporary-data__list-item"
-                key={item.id}
-                title={item.title}
-                onClick={() => {
-                  chrome.tabs.create({
-                    url: item.url,
-                  });
-                }}
-              >
-                <div className="favicon__container">
-                  <img
-                    src={
-                      item.faviconURL ||
-                      chrome.runtime.getURL("icons/default_favicon.png")
-                    }
-                    alt={item.title}
-                  />
+      <input
+        className="temporary-data__search"
+        type="text"
+        placeholder="请输入关键字进行搜索"
+        value={keywords}
+        onChange={(e) => setKeywords(e.target.value)}
+        onCompositionStart={() => setIsComposition(true)}
+        onCompositionEnd={() => setIsComposition(false)}
+      ></input>
+      {!showList.length ? (
+        <div className="search-empty">暂无匹配数据</div>
+      ) : (
+        <div className="temporary-data__list">
+          {showList.map((item) => {
+            return (
+              <div className="temporary-data__list-item-wrapper">
+                <div
+                  className="temporary-data__list-item"
+                  key={item.id}
+                  onClick={() => {
+                    chrome.tabs.create({
+                      url: item.url,
+                    });
+                  }}
+                >
+                  <div className="favicon__container">
+                    <img
+                      src={
+                        item.faviconURL ||
+                        chrome.runtime.getURL("icons/default_favicon.png")
+                      }
+                      alt={item.title}
+                    />
+                  </div>
+                  <div className="temporary-data__list-item-content">
+                    <div className="title" title={item.title}>
+                      {item.title}
+                    </div>
+                    <div className="url" title={item.url}>
+                      {item.url}
+                    </div>
+                    <div className="created-time">
+                      {formatTime(item.createdTime)}
+                    </div>
+                  </div>
                 </div>
-                <div className="temporary-data__list-item-content">
-                  <div className="title">{item.title}</div>
-                  <div className="url">{item.url}</div>
-                  <div className="created-time">
-                    {formatTime(item.createdTime)}
+                <div className="temporary-data__item-operation">
+                  <div
+                    className="edit-btn is-button"
+                    onClick={() => editData(item)}
+                  >
+                    编辑
+                  </div>
+                  <div
+                    className="delete-btn is-button"
+                    onClick={() => deleteTemporaryData(item)}
+                  >
+                    删除
                   </div>
                 </div>
               </div>
-              <div className="temporary-data__item-operation">
-                <div
-                  className="edit-btn is-button"
-                  onClick={() => editData(item)}
-                >
-                  编辑
-                </div>
-                <div
-                  className="delete-btn is-button"
-                  onClick={() => deleteTemporaryData(item)}
-                >
-                  删除
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   ) : (
     <div className="temporary-data__is-empty">暂无数据</div>
