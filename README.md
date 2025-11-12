@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 `Bookmark Search` 是一款轻量级 `Chrome 扩展`，让您通过 `Ctrl/⌘ + K` 快速搜索和访问书签。它支持模糊搜索、文件夹层级导航、保存搜索历史和高度自定义设置。此外，还提供独特的临时书签管理功能，让您保存网页而不污染主书签列表。
-<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/d263080a-c5a5-4418-bd79-bbd499a2ee4f" />
+<img width="600" height="298" alt="image" src="https://github.com/user-attachments/assets/24598558-07a4-4dd9-9955-c393a5303733" />
 
 ## ✨ 功能特性
 
@@ -60,9 +60,7 @@ npm run build
 
 点击扩展图标打开设置页面，您可以：
 - 调整搜索匹配规则
-- 自定义快捷键
-
-<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/150586e9-8927-42df-b0e3-b515743e30e2" />
+<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/fe14795e-cf1d-4e5b-a862-1527e8e93784" />
 
 ### 📌 临时书签
 临时书签功能允许您将当前浏览的网页快速保存为临时书签，这些书签会保存在扩展的独立存储中，__不会影响您的浏览器书签__。并且可以通过搜索打开这些临时书签。
@@ -75,7 +73,8 @@ npm run build
    - 根据自己的需求选择是否需要自定义标题，还是默认用当前网站标题加入到搜索列表中。
    ![添加到书签搜索项](https://github.com/user-attachments/assets/bdf38818-300e-4b03-9cc8-1edcd48dc482)
    - 您还可以自定义名称，点击 `添加到书签搜索项 / 自定义名称添加`，修改为您想要的名称然后保存即可。（注意：搜索时是根据您设置的名称来搜索的）
-   ![自定义名称添加](https://github.com/user-attachments/assets/ff743a81-f6ea-44cf-9c33-ba62750de4a4)
+   <img width="280" height="176" alt="image" src="https://github.com/user-attachments/assets/68bb4200-c6f8-422f-a31c-bd2edb146389" />
+
 
 2. **管理临时书签**：
    - 点击扩展图标打开主界面 或者通过快捷键：`Ctrl + K` (Windows/Linux) 或 `⌘ + K` (Mac)
@@ -83,12 +82,14 @@ npm run build
    - 查看所有已保存的临时书签
    - 点击"删除"可移除不需要的临时书签
    - 点击"编辑"可重新编辑临时书签名称
-<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/a9d20be3-3eb9-4507-ac63-bf81f90a4d10" />
+<img width="600" height="161" alt="image" src="https://github.com/user-attachments/assets/7371be68-5d61-4c88-abfb-e62eb40bb036" />
+
 
 3. **搜索临时书签**：
    - 在搜索框中输入关键词
    - 临时书签会与普通书签一起显示在搜索结果中，临时书签会有tag标识
-<img width="602" height="326" alt="image" src="https://github.com/user-attachments/assets/bc1db6a6-ae07-4d98-9ee2-0761521dcdda" />
+<img width="600" height="241" alt="image" src="https://github.com/user-attachments/assets/548f5b2c-749a-4b43-96ee-224b22aa8d1e" />
+
 
 4. **对于禁用了右键功能的网站**：
    - 您可以通过快捷键 `Ctrl + Shift + K` 打开保存窗口保存即可。
