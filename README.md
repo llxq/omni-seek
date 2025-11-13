@@ -63,7 +63,8 @@ npm run build
 
 点击扩展图标打开设置页面，您可以：
 - 自定义调整搜索匹配规则
-<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/e87cc735-ae46-416c-b12f-8954ac0b0f28" />
+ <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/87b8421f-04db-4d93-8a1b-c798b48a5d3d" />
+
 
 ### 📌 临时书签
 临时书签功能允许您将当前浏览的网页快速保存为临时书签，这些书签会保存在扩展的独立存储中，__不会影响您的浏览器书签__。并且可以通过搜索打开这些临时书签。
