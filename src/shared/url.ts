@@ -46,10 +46,9 @@ export const findSimilarTab = (
       }),
       {
         keys: [
-          { name: "_compareKeyword", weight: 0.9 },
-          { name: "url", weight: 0.6 },
+          { name: "_compareKeyword", weight: 100 },
+          { name: "url", weight: 60 },
         ],
-        threshold: 0.3,
       },
     ).search(getPath(currentUrl) || "")[0]?.item?.item || sameDomainTabs[0]
   );

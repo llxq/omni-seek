@@ -99,28 +99,6 @@ export const Setting = () => {
             的配置
           </div>
           <FormItem
-            label="匹配的严格程度。0 (精确) 到 100（完全不相关）"
-            tips="0-100"
-          >
-            <input
-              type="text"
-              className="search-similarity"
-              value={formData.searchSimilarity}
-              onChange={(e) => {
-                updateFormData({
-                  searchSimilarity: e.target.value as unknown as number,
-                });
-              }}
-              onBlur={(e) => {
-                const value = Number(e.target.value);
-                updateFormData({
-                  searchSimilarity:
-                    isNaN(value) || !value ? 30 : value > 100 ? 100 : value,
-                });
-              }}
-            />
-          </FormItem>
-          <FormItem
             label="是否启用扩展搜索"
             tips="允许使用（如 '^'、'$'、'='、'!'）进行精确、前缀、后缀或反向匹配。"
           >

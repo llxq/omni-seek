@@ -149,17 +149,10 @@ export const useSearch = () => {
                     weight: currentWeight * 0.8,
                     name: `${m}NoSpace`,
                   });
-                  if (setting.supportPinyin === "1" && m === "title") {
-                    result.push({
-                      weight: currentWeight * 0.9,
-                      name: "titlePinyin",
-                    });
-                  }
                   return result;
                 },
                 [] as string[],
               ),
-              threshold: setting.searchSimilarity / 100,
               useExtendedSearch: setting.enableExtensionSearch === "1",
             }),
           );

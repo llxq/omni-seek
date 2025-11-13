@@ -5,6 +5,11 @@ import type {
 } from "./types.ts";
 
 /**
+ * 搜索匹配的时候默认的权重
+ */
+export const DEFAULT_WEIGHT = 100;
+
+/**
  * 获取默认设置
  */
 export const getDefaultSetting = (): ISearchBookmarkSetting => {
@@ -12,15 +17,14 @@ export const getDefaultSetting = (): ISearchBookmarkSetting => {
     openNewTab: "1",
     searchRule: ["url", "title", "parentTitle"],
     useDefaultSearch: "0",
-    searchSimilarity: 30,
     enableExtensionSearch: "0",
   };
 };
 
 export const ruleSettingToWeight: Partial<Record<TSearchRule, number>> = {
-  title: 1,
-  url: 0.6,
-  parentTitle: 0.3,
+  title: 100,
+  url: 60,
+  parentTitle: 30,
 };
 
 /**
