@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-`Bookmark Search` 是一款轻量级 `Chrome 扩展`，让您通过 `Ctrl/⌘ + K` 快速搜索和访问书签。它支持模糊搜索、文件夹层级导航、保存搜索历史和高度自定义设置。此外，还提供独特的临时书签管理功能，让您保存网页而不污染主书签列表。
+🚀 __Bookmark Search__ 致力于提升您的浏览效率。只需按下 `Ctrl/⌘ + K`，即可瞬间唤起强大的搜索栏，利用 [Fuse.js](https://fusejs.io/) 的智能模糊匹配快速找到__书签__、__已打开的标签页__或__文件夹层级__。除了极致的搜索体验，我们还独创了__临时书签管理__功能——让您可以随意保存临时网页而不“污染”您精心整理的主书签库。隐私安全至上，本扩展完全离线运行，绝不收集您的任何数据。
 <img width="600" height="510" alt="image" src="https://github.com/user-attachments/assets/cf9e03dd-36e7-450f-b89c-7c490825e2fb" />
 <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/15da2a73-3657-444b-aa50-e2c5dd6077ec" />
 
@@ -10,7 +10,7 @@
 ## ✨ 功能特性
 
 - ⚡ **全局快速搜索** - 在浏览器的任何页面中，点击扩展图标，或者使用 `Ctrl/⌘ + K` 快捷键快速调出搜索界面（如遇到快捷键失效的情况，请查看 [为什么快捷键不生效？](https://github.com/llxq/bookmark-search?tab=readme-ov-file#-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
-- 🔍 **智能匹配** - 支持标题、URL 和父文件夹名称的模糊搜索，搜索功能使用 [fusejs](https://fusejs.io/) 插件，拥有强大的搜索功能，还能开启各种正则匹配搜索
+- 🔍 **智能匹配** - 支持标题、URL 和父文件夹名称的模糊搜索，搜索功能使用 [Fuse.js](https://fusejs.io/) 插件，拥有强大的搜索功能，还能开启各种正则匹配搜索
 - 📂 **文件夹层级** - 使用 `/` 分隔符搜索多级文件夹结构
 - ➕ **标签页搜索** - 支持搜索已经打开的标签页
 - ⏱️ **历史记录** - 自动保存最近访问的 10 条记录
