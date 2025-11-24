@@ -3,11 +3,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 `Bookmark Search` 是一款轻量级 `Chrome 扩展`，让您通过 `Ctrl/⌘ + K` 快速搜索和访问书签。它支持模糊搜索、文件夹层级导航、保存搜索历史和高度自定义设置。此外，还提供独特的临时书签管理功能，让您保存网页而不污染主书签列表。
-<img width="600" height="298" alt="image" src="https://github.com/user-attachments/assets/24598558-07a4-4dd9-9955-c393a5303733" />
+<img width="600" height="510" alt="image" src="https://github.com/user-attachments/assets/cf9e03dd-36e7-450f-b89c-7c490825e2fb" />
+<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/15da2a73-3657-444b-aa50-e2c5dd6077ec" />
+
 
 ## ✨ 功能特性
 
-- ⚡ **全局快速搜索** - 在浏览器的任何页面中，使用 `Ctrl/⌘ + K` 快速调出搜索界面，或者点击扩展图标也可打开搜索界面
+- ⚡ **全局快速搜索** - 在浏览器的任何页面中，点击扩展图标，或者使用 `Ctrl/⌘ + K` 快捷键快速调出搜索界面（如遇到快捷键失效的情况，请查看 [为什么快捷键不生效？](https://github.com/llxq/bookmark-search?tab=readme-ov-file#-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 - 🔍 **智能匹配** - 支持标题、URL 和父文件夹名称的模糊搜索，搜索功能使用 [fusejs](https://fusejs.io/) 插件，拥有强大的搜索功能，还能开启各种正则匹配搜索
 - 📂 **文件夹层级** - 使用 `/` 分隔符搜索多级文件夹结构
 - ➕ **标签页搜索** - 支持搜索已经打开的标签页
@@ -15,6 +17,7 @@
 - ⚙️ **高度可定制** - 可配置的搜索规则和快捷键
 - 🌐 **搜索引擎集成** - 未找到书签时支持使用默认搜索引擎搜索
 - 📝 **临时书签管理** - 添加临时书签到独立列表，不污染主书签数据，临时数据会持久保存在插件内部
+- 🛡️ **隐私优先** - 所有数据处理完全在__本地离线运行__，绝不收集或上传您的书签、历史记录或任何个人信息，代码开源透明。
 
 ## 🚀 快速开始
 
@@ -48,7 +51,7 @@ npm run build
 
 #### 🔔 安装参考
 <img width="1920" height="934" alt="image" src="https://github.com/user-attachments/assets/a00a2cc8-75f9-4501-8125-fca9444baa97" />
-- 点击固定，可以将插件固定在扩展部分，方便使用。
+- 点击固定，可以将插件固定在扩展部分，方便使用，可以直接点击插件图标唤起搜索界面。
 <img width="320" height="110" alt="image" src="https://github.com/user-attachments/assets/60261aa6-fd74-41e3-ad68-ebfb824adde9" />
 
 
@@ -56,7 +59,7 @@ npm run build
 
 ### 基本操作
 
-- **打开搜索**：`Ctrl + K` (Windows/Linux) 或 `⌘ + K` (Mac)
+- **打开搜索**：`Ctrl + K` (Windows/Linux) 或 `⌘ + K` (Mac)，或者直接点击插件图标
 - **导航**：使用 `↑/↓` 方向键选择结果
 - **打开**：`Enter` 在新标签页打开选中的书签
 - **关闭**：`Esc` 或点击搜索框外部
@@ -67,7 +70,7 @@ npm run build
 
 点击扩展图标打开设置页面，您可以：
 - 自定义调整搜索匹配规则
- <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/87b8421f-04db-4d93-8a1b-c798b48a5d3d" />
+ <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/8ff1da12-380c-469c-9098-87c76b704b7d" />
 
 
 ### 📌 临时书签
@@ -184,6 +187,7 @@ npm run lint
 - `favicon` - 获取网站图标
 - `storage` - 保存用户设置和搜索历史
 - `search` - 使用默认搜索引擎进行搜索
+- `notifications` - 消息通知
 - `contextMenus` - 添加右键菜单
 
 ## 📄 许可证
