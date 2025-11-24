@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 🚀 __Bookmark Search__ 致力于提升您的浏览效率。只需按下 `Ctrl/⌘ + K`，即可瞬间唤起强大的搜索栏，利用 [Fuse.js](https://fusejs.io/) 的智能模糊匹配快速找到 __书签__ 、__已打开的标签页__ 或 __文件夹层级__。除了极致的搜索体验，我们还独创了 __临时书签管理__ 功能——让您可以随意保存临时网页而不“污染”您精心整理的主书签库。__隐私安全至上__，本扩展完全离线运行，绝不收集您的任何数据。
+
 <img width="600" height="510" alt="image" src="https://github.com/user-attachments/assets/cf9e03dd-36e7-450f-b89c-7c490825e2fb" />
 <img width="600" height="231" alt="image" src="https://github.com/user-attachments/assets/e84a7e6e-0095-4bae-be71-6224a346c408" />
 
