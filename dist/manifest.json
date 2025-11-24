@@ -18,6 +18,7 @@
     "favicon",
     "storage",
     "search",
+    "notifications",
     "contextMenus"
   ],
   "action": {

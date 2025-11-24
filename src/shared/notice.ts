@@ -33,3 +33,20 @@ export const createNotification = (
     });
   }, 2000);
 };
+
+/**
+ * 创建系统通知
+ * @param message
+ * @param title
+ */
+export const createSystemNotification = async (
+  message: string,
+  title = "提示",
+) => {
+  await chrome.notifications.create({
+    type: "basic",
+    iconUrl: "icons/icon.png",
+    title,
+    message,
+  });
+};

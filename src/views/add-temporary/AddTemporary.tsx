@@ -18,18 +18,27 @@ export const AddTemporary = ({
     setTemporaryData(void 0);
   };
 
-  const confirm = () => {
+  const baseConfirm = async () => {
     if (!title) {
       createNotification("标题不能为空");
       return;
     }
-    chrome.runtime.sendMessage({
+    await chrome.runtime.sendMessage({
       type: SET_USER_TEMPORARY_DATA,
       data: {
         ...data,
         title: title.trim(),
       },
     });
+  };
+
+  const confirmAndBack = async () => {
+    await baseConfirm();
+    back();
+  };
+
+  const confirm = async () => {
+    await baseConfirm();
     window.close();
   };
 
@@ -58,8 +67,11 @@ export const AddTemporary = ({
         <div className="is-button" onClick={back}>
           返回搜索页面
         </div>
+        <div className="is-button" onClick={confirmAndBack}>
+          保存并返回搜索页面
+        </div>
         <div className="is-button" onClick={confirm}>
-          确定
+          保存
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import type {
   IBookmark,
   ISearchBookmarkSetting,
-  TBooleanValue,
   TSearchRule,
 } from "./types.ts";
 
@@ -111,7 +110,7 @@ export const processBookmarks = (
  * 获取所有tab并且按照窗口进行分组
  */
 export const getAllOpenTabs = async (
-  searchOpenedTab: TBooleanValue,
+  searchOpenedTab: boolean,
 ): Promise<IBookmark[]> => {
   if (!searchOpenedTab) {
     return [];

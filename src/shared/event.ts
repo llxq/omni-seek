@@ -1,5 +1,5 @@
 import { db } from "./Db.ts";
-import { createNotification } from "./notice.ts";
+import { createNotification, createSystemNotification } from "./notice.ts";
 import type { IBookmark, ITemporaryData } from "./types.ts";
 
 /**
@@ -192,12 +192,12 @@ export const onSetUserTemporaryData = () => {
       if (data.createdTime) {
         // 修改
         db.update(data).then(() => {
-          createNotification("修改成功");
+          void createSystemNotification("临时书签修改成功");
         });
         return;
       }
       db.add(data).then(() => {
-        createNotification("保存成功");
+        void createSystemNotification("临时书签保存成功");
       });
     }
   });

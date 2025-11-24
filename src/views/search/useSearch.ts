@@ -9,7 +9,7 @@ import {
   processBookmarks,
 } from "../../shared/shared.ts";
 import { getStorage, setStorage } from "../../shared/storage.ts";
-import type { IBookmark, TBooleanValue } from "../../shared/types.ts";
+import type { IBookmark } from "../../shared/types.ts";
 import { findSimilarTab, getDomain } from "../../shared/url.ts";
 import { useSearchSetting } from "./useSearchSetting.ts";
 
@@ -26,7 +26,7 @@ const MAX_HISTORY_COUNT = 10;
 /**
  * 获取所有的书签
  */
-const getBookmarks = async (searchOpenedTab: TBooleanValue) => {
+const getBookmarks = async (searchOpenedTab: boolean) => {
   try {
     const [bookmarks, userTemplateData, openTabs] = await Promise.all([
       processBookmarks(await chrome.bookmarks.getTree()),
@@ -89,8 +89,9 @@ export const useSearch = () => {
   useEffect(() => {
     if (!loadingSetting) {
       setLoading(true);
+      const isSearchOpenedTab = setting.searchOpenedTab === "1";
       Promise.all([
-        getBookmarks(setting.searchOpenedTab),
+        getBookmarks(isSearchOpenedTab),
         getHistorySelectBookmarks(),
       ]).then(([currentBookmarks, historyBookmarks]) => {
         setBookmarks(currentBookmarks);
@@ -101,7 +102,7 @@ export const useSearch = () => {
           fuseSearchBookmarks.push(getFuseSearchResult(item));
         });
         setFuse(
-          new Fuse(fuseSearchBookmarks, {
+          new Fuse<IBookmark>(fuseSearchBookmarks, {
             keys: setting.searchRule.reduce(
               (result: FuseOptionKey<IBookmark>[], m) => {
                 const currentWeight = ruleSettingToWeight[m] || 0;
@@ -118,6 +119,17 @@ export const useSearch = () => {
               [] as string[],
             ),
             useExtendedSearch: setting.enableExtensionSearch === "1",
+            includeScore: isSearchOpenedTab,
+            sortFn: (a, b) => {
+              if (isSearchOpenedTab) {
+                const itemA = fuseSearchBookmarks[a.idx];
+                const itemB = fuseSearchBookmarks[b.idx];
+                const aScore = itemA.isOpenTab ? a.score * 0.8 : a.score;
+                const bScore = itemB.isOpenTab ? b.score * 0.8 : b.score;
+                return aScore - bScore;
+              }
+              return a.score - b.score;
+            },
           }),
         );
         const currentHistoryBookmarks = (historyBookmarks || []).reduce(

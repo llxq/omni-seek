@@ -101,6 +101,7 @@
               border-radius: 4px;
               font-size: 12px;
               color: #fff;
+              flex-shrink: 0;
 
               &.is-open {
                 color: #fff;
