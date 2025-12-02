@@ -48,6 +48,7 @@ export const AddCollect = ({ data, back }: IAddCollectProps) => {
           value={title}
           setValue={setTitle}
           placeholder="请输入标题"
+          onEnter={confirm}
         />
       </div>
       <div className="add-collect__footer">
