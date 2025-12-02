@@ -1,0 +1,102 @@
+.collect-management__empty {
+  text-align: center;
+  font-size: var(--omni-font-size-base);
+  color: var(--omni-text-tertiary);
+  margin-top: 20%;
+}
+
+.collect-management__container {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .search-empty {
+    @extend .collect-management__empty;
+  }
+
+  .collect-management__list {
+    font-size: var(--omni-font-size-base);
+    color: var(--omni-text-primary);
+    flex: 1;
+    overflow: auto;
+
+    .collect-management__list-item-wrapper {
+      display: flex;
+      justify-content: space-between;
+      border-radius: 6px;
+
+      &:hover {
+        background-color: var(--omni-primary-hover-color);
+        color: var(--omni-primary-color);
+      }
+
+      .collect-management__list-item {
+        padding: 0 8px;
+        cursor: pointer;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        column-gap: 8px;
+        overflow: hidden;
+
+        .favicon {
+          width: 16px;
+          height: 16px;
+          vertical-align: middle;
+          margin-right: 4px;
+        }
+
+        .collect-management__list-item-content {
+          flex: 1;
+          overflow: hidden;
+          padding: 4px 0;
+
+          .title {
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .url, .created-time {
+            font-size: var(--omni-font-size-sm);
+            color: var(--omni-text-tertiary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+
+          .created-time {
+            color: var(--omni-text-secondary);
+            margin-top: 2px;
+          }
+        }
+
+      }
+    }
+
+    .collect-management__item-operation {
+      display: flex;
+
+      .is-button {
+        width: 40px;
+        font-size: var(--omni-font-size-sm);
+        cursor: pointer;
+        text-align: center;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .delete-btn {
+        color: var(--omni-error-color);
+      }
+
+      .edit-btn {
+        color: var(--omni-primary-color);
+      }
+    }
+  }
+}

@@ -5,47 +5,19 @@
   flex-direction: column;
   overflow: hidden;
 
-  .setting__title {
-    height: 42px;
-    line-height: 42px;
-    padding-left: 12px;
-    color: #333;
-    font-size: 16px;
-    border-bottom: 1px solid #ddd;
-    width: 100%;
-  }
-
   .setting__content {
     flex: 1;
     overflow: hidden;
     width: 100%;
-    padding: 16px;
-
-    .search-similarity {
-      width: 200px;
-      padding: 8px 12px;
-      outline: none;
-      font-size: 14px;
-      border-radius: 4px;
-      transition: all 0.3s ease;
-      border: var(--search-input-border-size) solid var(--border-color);
-      margin-bottom: 4px;
-      color: var(--text-color);
-
-      &::placeholder {
-        font-size: 12px;
-        color: var(--search-input-placeholder-color);
-      }
-
-      &:focus {
-        border-color: var(--color-primary);
-      }
-    }
 
     .setting__tips {
-      font-size: 12px;
-      color: #999;
+      font-size: var(--omni-font-size-sm);
+      color: var(--omni-text-tertiary);
       margin: 8px 0;
+
+      a {
+        color: var(--omni-primary-color);
+      }
     }
   }
 
@@ -56,20 +28,14 @@
 
     .submit-button {
       width: 88px;
-      border: 1px solid #4096ff;
       border-radius: 4px;
-      color: #4096ff;
-      background-color: #fff;
+      color: #fff;
+      background-color: var(--omni-primary-color);
       cursor: pointer;
       transition: all 0.3s ease;
       height: 32px;
       line-height: 32px;
       text-align: center;
-
-      &:hover {
-        // 增加 0.15% 的透明度
-        background-color: rgba(64, 150, 255, 0.15);
-      }
     }
   }
 }

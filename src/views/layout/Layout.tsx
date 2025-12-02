@@ -1,74 +1,105 @@
 import "./layout.scss";
 import { useEffect, useState } from "react";
-import { POPUP_TYPE_KEY } from "../../shared/event.ts";
+import {
+  CUSTOM_ADD_COLLECTION_DATA_STORAGE_KEY,
+  OMNI_SEARCH_SETTING_KEY,
+} from "../../shared/constants.ts";
 import { getStorage, removeStorage } from "../../shared/storage.ts";
-import type { IBookmark, ITemporaryData } from "../../shared/types.ts";
-import { AddTemporary } from "../add-temporary/AddTemporary.tsx";
+import type {
+  IOmniCollectSearchData,
+  IOmniSearchSetting,
+  IOmniSeekTabParams,
+  TTheme,
+} from "../../shared/types.ts";
+import { AddCollect } from "../add-collect/AddCollect.tsx";
+import { CollectManagement } from "../collect-management/CollectManagement.tsx";
 import { Search } from "../search/Search.tsx";
 import { Setting } from "../setting/Setting.tsx";
-import { TemporaryData } from "../temporary-data/TemporaryData.tsx";
 
-const layoutTabs = [
+const omniSeekTabs = [
   {
     name: "搜索",
     key: "search",
     component: () => <Search />,
   },
   {
-    name: "设置",
-    key: "setting",
-    component: () => <Setting />,
+    name: "收藏管理",
+    key: "collectManagement",
+    component: (params: IOmniSeekTabParams) => (
+      <CollectManagement {...params} />
+    ),
   },
   {
-    name: "临时书签管理",
-    key: "temporary",
-    component: (setTemporaryData: (data: TUndefinable<IBookmark>) => void) => (
-      <TemporaryData setTemporaryData={setTemporaryData} />
-    ),
+    name: "设置",
+    key: "setting",
+    component: (params: IOmniSeekTabParams) => <Setting {...params} />,
   },
 ];
 
 export const Layout = () => {
   const [activeTab, setActiveTab] = useState("search");
+  const [theme, setTheme] = useState<TTheme>("auto");
+  const [themeClass, setThemeClass] = useState("");
   const [temporaryData, setTemporaryData] =
-    useState<TUndefinable<IBookmark>>(void 0);
+    useState<TUndefinable<IOmniCollectSearchData>>(void 0);
+
+  const back = () => {
+    setTemporaryData(void 0);
+  };
 
   useEffect(() => {
-    getStorage<ITemporaryData & { _t: number }>(POPUP_TYPE_KEY).then((data) => {
-      if (data) {
-        // 判断数据是否超过2s，超过则认为是过期数据
-        if (Date.now() - data._t > 2 * 1000) {
-          // 过期数据直接删除
-          void removeStorage(POPUP_TYPE_KEY);
-        } else {
-          setTemporaryData(data);
-        }
-      }
+    getStorage<IOmniCollectSearchData>(
+      CUSTOM_ADD_COLLECTION_DATA_STORAGE_KEY,
+    ).then((data) => {
+      setTemporaryData(data || void 0);
+      // 用完直接删除
+      void removeStorage(CUSTOM_ADD_COLLECTION_DATA_STORAGE_KEY);
+    });
+
+    getStorage<IOmniSearchSetting>(OMNI_SEARCH_SETTING_KEY).then((setting) => {
+      // 设置主题
+      setTheme((preTheme) => setting?.theme || preTheme);
     });
   }, []);
 
-  return temporaryData ? (
-    <AddTemporary data={temporaryData} setTemporaryData={setTemporaryData} />
-  ) : (
-    <div className="layout__container">
-      <div className="layout__header">
-        {layoutTabs.map((tab) => {
-          return (
-            <div
-              className={`layout__tab ${tab.key === activeTab ? "active" : ""}`}
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              {tab.name}
-            </div>
-          );
-        })}
-      </div>
-      <div className="layout__content">
-        {layoutTabs
-          .find((tab) => tab.key === activeTab)
-          ?.component(setTemporaryData)}
-      </div>
+  useEffect(() => {
+    if (theme === "auto") {
+      const media = window.matchMedia("(prefers-color-scheme: dark)");
+      setThemeClass(`${media.matches ? "dark-theme" : "light-theme"}`);
+    } else {
+      setThemeClass(`${theme}-theme`);
+    }
+  }, [theme]);
+
+  return (
+    <div className={`layout__wrapper ${themeClass}`}>
+      {temporaryData ? (
+        <AddCollect data={temporaryData} back={back} />
+      ) : (
+        <div className={`layout__container`}>
+          <div className="layout__header">
+            {omniSeekTabs.map((tab) => {
+              return (
+                <div
+                  className={`layout__tab ${tab.key === activeTab ? "active" : ""}`}
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                >
+                  {tab.name}
+                </div>
+              );
+            })}
+          </div>
+          <div className="layout__content">
+            {omniSeekTabs
+              .find((tab) => tab.key === activeTab)
+              ?.component({
+                editCollect: setTemporaryData,
+                updateTheme: setTheme,
+              })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,3 +1,5 @@
+@forward "../../assets/styles/theme.scss";
+
 * {
   margin: 0;
   padding: 0;
@@ -7,93 +9,93 @@
 
 body, html {
   overflow: hidden;
+  background-color: transparent;
 }
 
-:root {
-  --color-primary: #1890ff;
-  --border-color: #ddd;
-  --search-input-border-size: 1px;
-  --search-input-placeholder-color: #999;
-  --text-color: #333;
-  --item-hover-bg-color: #E8F8FF;
-  --item-active-color: #158DFF;
-  --color-danger: #ff4d4f;
-  --notification-bg-color: rgb(240, 249, 235);
-  --notification-text-color: #67c23a;
-  --notification-border-color: rgb(225,243,216);
-}
+.layout__wrapper {
+  display: contents;
 
-.layout__container {
-  width: 600px;
-  height: 600px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-
-  .layout__header {
+  .layout__container {
+    width: 600px;
+    height: 600px;
     display: flex;
-    border-bottom: 1px solid #ddd;
-    column-gap: 12px;
-    padding: 0 12px;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--omni-bg-color);
+    color: var(--omni-text-primary);
 
-    .layout__tab {
-      cursor: pointer;
-      color: #333;
-      padding: 0 24px;
-      height: 42px;
-      line-height: 42px;
-      font-size: 16px;
-      position: relative;
+    .layout__header {
+      display: flex;
+      border-bottom: var(--omni-border-size) solid var(--omni-border-color);
+      column-gap: 12px;
+      padding: 0 12px;
 
-      &.active {
-        color: var(--color-primary);
-        font-weight: 600;
+      .layout__tab {
+        cursor: pointer;
+        color: var(--omni-text-primary);
+        padding: 0 24px;
+        height: 42px;
+        line-height: 42px;
+        font-size: var(--omni-font-size-base);
+        position: relative;
 
-        &::after {
-          content: " ";
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          width: 100%;
-          height: 2px;
-          background: var(--color-primary);
+        &.active {
+          color: var(--omni-primary-color);
+          font-weight: 600;
+
+          &::after {
+            content: " ";
+            position: absolute;
+            left: 0;
+            bottom: calc(var(--omni-border-size) * -1);
+            width: 100%;
+            height: 2px;
+            background: var(--omni-primary-color);
+            z-index: 1;
+          }
         }
       }
     }
-  }
 
-  .layout__content {
-    padding: 12px 14px;
-    flex: 1;
-    overflow: hidden;
+    .layout__content {
+      padding: 12px 14px;
+      flex: 1;
+      overflow: hidden;
+    }
   }
 }
 
-.__bookmark__notification {
+.omni-seek__notification {
   position: absolute;
-  top: 48px;
+  top: 6px;
   left: 50%;
   transform: translateY(-20px) translateX(-50%);
   padding: 4px 12px;
   width: max-content;
   border-radius: 2px;
   font-size: 14px;
-  color: var(--notification-text-color);
-  background-color: var(--notification-bg-color);
-  border: 1px solid var(--notification-border-color);
+  color: var(--omno-notification-text-color);
+  background-color: var(--omno-notification-bg-color);
+  border: 1px solid var(--omno-notification-border-color);
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   opacity: 0;
 
   &.is-error {
-    --notification-bg-color: rgb(254, 240, 240);
-    --notification-text-color: rgb(245, 108, 108);
-    --notification-border-color: rgb(253, 226, 226);
+    --omno-notification-bg-color: rgb(254, 240, 240);
+    --omno-notification-text-color: rgb(245, 108, 108);
+    --omno-notification-border-color: rgb(253, 226, 226);
   }
 
   &.is-warning {
-    --notification-bg-color: rgb(253, 246, 236);
-    --notification-text-color: rgb(230, 162, 60);
-    --notification-border-color: rgb(250, 236, 216);
+    --omno-notification-bg-color: rgb(253, 246, 236);
+    --omno-notification-text-color: rgb(230, 162, 60);
+    --omno-notification-border-color: rgb(250, 236, 216);
+  }
+
+  &.is-success {
+    --omno-notification-bg-color: rgb(240, 253, 245);
+    --omno-notification-text-color: rgb(74, 222, 128);
+    --omno-notification-border-color: rgb(209, 250, 229);
   }
 
   &.is-show {

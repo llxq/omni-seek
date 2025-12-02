@@ -3,7 +3,7 @@ import type { TBooleanValue } from "../../shared/types.ts";
 import "./radio.scss";
 
 interface IRadioContext {
-  value: TBooleanValue;
+  value: TBooleanValue | string;
   name: string;
   onChange: (value: TBooleanValue) => void;
 }
@@ -11,6 +11,7 @@ interface IRadioContext {
 const RadioContext = createContext<IRadioContext>({
   value: "0",
   name: "",
+  // eslint-disable-next-line
   onChange: (_: TBooleanValue) => {},
 });
 
@@ -22,7 +23,7 @@ export const RadioGroup = ({
 }: {
   children: ReactNode[];
   name: string;
-  value: TBooleanValue;
+  value: TBooleanValue | string;
   onChange: (value: TBooleanValue) => void;
 }) => {
   const [radioValue, setRadioValue] = useState(value);
@@ -45,7 +46,7 @@ export const Radio = ({
   value,
   children,
 }: {
-  value: TBooleanValue;
+  value: TBooleanValue | string;
   children: ReactNode;
 }) => {
   // 默认content有

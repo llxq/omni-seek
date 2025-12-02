@@ -13,10 +13,8 @@ export const createNotification = (
 ) => {
   timer && clearTimeout(timer);
   const div = document.createElement("div");
-  div.classList.add("__bookmark__notification");
-  if (type !== "success") {
-    div.classList.add(`is-${type}`);
-  }
+  div.classList.add("omni-seek__notification");
+  div.classList.add(`is-${type}`);
   requestAnimationFrame(() => {
     div.classList.add("is-show");
   });

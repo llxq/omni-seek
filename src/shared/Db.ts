@@ -1,19 +1,30 @@
-import type { IBookmark } from "./types.ts";
+import type { IOmniSearchData } from "./types.ts";
 
-const DB_NAME = "bookmark-search_db";
-const DB_VERSION = 1;
-const STORE_NAME = "bookmarks";
-
-export class Db {
+export class BaseDb {
   public db?: IDBDatabase;
+  public dbName: string;
+  public storeName: string;
+  public dbVersion: number;
 
+  constructor(dbName: string, storeName: string, dbVersion?: number) {
+    this.dbName = dbName;
+    this.storeName = storeName;
+    this.dbVersion = dbVersion || 1;
+  }
+
+  /**
+   * 打开数据库连接
+   */
   public open(): Promise<IDBDatabase> {
     if (this.db) {
       return Promise.resolve(this.db);
     }
 
     return new Promise((resolve, reject) => {
-      const request: IDBOpenDBRequest = indexedDB.open(DB_NAME, DB_VERSION);
+      const request: IDBOpenDBRequest = indexedDB.open(
+        this.dbName,
+        this.dbVersion,
+      );
 
       request.onerror = (event: Event) => {
         reject((event.target as IDBRequest).error);
@@ -26,14 +37,17 @@ export class Db {
 
       request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const db: IDBDatabase = (event.target as IDBRequest).result;
-        if (!db.objectStoreNames.contains(STORE_NAME)) {
-          const store = db.createObjectStore(STORE_NAME, { keyPath: "id" });
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          const store = db.createObjectStore(this.storeName, { keyPath: "id" });
           store.createIndex("id", "id", { unique: true });
         }
       };
     });
   }
 
+  /**
+   * 关闭数据库连接
+   */
   public close(): void {
     if (this.db) {
       this.db.close();
@@ -43,16 +57,16 @@ export class Db {
 
   private async _getStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
     const db = await this.open();
-    const transaction = db.transaction(STORE_NAME, mode);
-    return transaction.objectStore(STORE_NAME);
+    const transaction = db.transaction(this.storeName, mode);
+    return transaction.objectStore(this.storeName);
   }
 
-  public async add(data: IBookmark): Promise<string> {
+  public async add(data: IOmniSearchData): Promise<string> {
     const store = await this._getStore("readwrite");
     return new Promise((resolve, reject) => {
       const request = store.add({
         ...data,
-        createdTime: Date.now(),
+        updateTime: Date.now(),
       });
       request.onsuccess = (event) =>
         resolve((event.target as IDBRequest).result);
@@ -80,10 +94,13 @@ export class Db {
     });
   }
 
-  public async update(data: IBookmark): Promise<string> {
+  public async update(data: IOmniSearchData): Promise<string> {
     const store = await this._getStore("readwrite");
     return new Promise((resolve, reject) => {
-      const request = store.put(data);
+      const request = store.put({
+        ...data,
+        updateTime: Date.now(),
+      });
       request.onsuccess = (event) =>
         resolve((event.target as IDBRequest).result);
       request.onerror = (event) => reject((event.target as IDBRequest).error);
@@ -100,4 +117,16 @@ export class Db {
   }
 }
 
-export const db = new Db();
+/**
+ * 默认数据库
+ */
+const DB_NAME = "omni-seek_db";
+/**
+ * 默认数据表
+ */
+const STORE_NAME = "omni-seek_store";
+
+/**
+ * 初始化数据库
+ */
+export const db = new BaseDb(DB_NAME, STORE_NAME);

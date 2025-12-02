@@ -7,24 +7,25 @@
     margin-bottom: 8px;
     line-height: 1.5715;
     text-align: left;
-    color: rgba(0, 0, 0, 0.88);
+    color: var(--omni-text-primary);
     font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 0;
     padding-left: 6px;
+    font-weight: 400;
 
     .form-item__tips {
       font-size: 12px;
-      color: #999;
+      color: var(--omni-text-tertiary);
       margin-left: 4px;
     }
   }
 
   &__content {
     line-height: 1.5715;
-    color: rgba(0, 0, 0, 0.88);
+    color: var(--omni-text-primary);
     font-size: 14px;
   }
 }

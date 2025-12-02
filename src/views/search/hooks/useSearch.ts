@@ -1,0 +1,188 @@
+import { useEffect, useState } from "react";
+import {
+  MAX_HISTORY_COUNT,
+  OMNI_SEARCH_HISTORY_KEY,
+  ruleSettingToWeight,
+} from "../../../shared/constants.ts";
+import { getAllSearchData } from "../../../shared/data.ts";
+import { createSystemNotification } from "../../../shared/notice.ts";
+import { getStorage, setStorage } from "../../../shared/storage.ts";
+import type { IOmniSearchData } from "../../../shared/types.ts";
+import Fuse, { type FuseOptionKey } from "fuse.js";
+import {
+  closePopup,
+  getFuseSearchResult,
+  switchTab,
+} from "../../../shared/utils.ts";
+import { useSetting } from "./useSetting.ts";
+
+export const useSearch = () => {
+  const [keywords, setKeywords] = useState("");
+  // search data
+  const [searchData, setSearchData] = useState<IOmniSearchData[]>([]);
+  // select data
+  const [selectData, setSelectData] =
+    useState<TUndefinable<IOmniSearchData>>(void 0);
+  // history
+  const [historyData, setHistoryData] = useState<IOmniSearchData[]>([]);
+  // fuse
+  const [fuse, setFuse] = useState<TUndefinable<Fuse<IOmniSearchData>>>(void 0);
+
+  // setting
+  const { setting, loading } = useSetting();
+
+  // init data
+  useEffect(() => {
+    if (!loading) {
+      const isSearchOpenedTab = setting.searchOpenedTab === "1";
+
+      Promise.all([
+        getAllSearchData(isSearchOpenedTab),
+        getStorage<string[]>(OMNI_SEARCH_HISTORY_KEY),
+      ]).then(([data, historyKey]) => {
+        const dataMap = new Map<string, IOmniSearchData>();
+        const fuseSearchData: IOmniSearchData[] = [];
+        data.forEach((m) => {
+          dataMap.set(m.id, m);
+          fuseSearchData.push(getFuseSearchResult(m));
+        });
+        // init fuse
+        setFuse(
+          new Fuse<IOmniSearchData>(fuseSearchData, {
+            keys: setting.searchRules.reduce(
+              (result: FuseOptionKey<IOmniSearchData>[], m) => {
+                const currentWeight = ruleSettingToWeight[m] || 0;
+                result.push({
+                  weight: currentWeight,
+                  name: m,
+                });
+                result.push({
+                  weight: currentWeight * 0.8,
+                  name: `${m}NoSpace`,
+                });
+                return result;
+              },
+              [] as string[],
+            ),
+            useExtendedSearch: setting.useAdvancedSearch === "1",
+            includeScore: isSearchOpenedTab,
+            sortFn: (a, b) => {
+              if (isSearchOpenedTab) {
+                const itemA = fuseSearchData[a.idx];
+                const itemB = fuseSearchData[b.idx];
+                const aScore = itemA.isOpenTab ? a.score * 0.8 : a.score;
+                const bScore = itemB.isOpenTab ? b.score * 0.8 : b.score;
+                return aScore - bScore;
+              }
+              return a.score - b.score;
+            },
+          }),
+        );
+        const historyData = (historyKey || []).reduce(
+          (result: IOmniSearchData[], item) => {
+            if (dataMap.has(item)) {
+              result.push(dataMap.get(item)!);
+            }
+            return result;
+          },
+          [],
+        );
+        if (historyData.length) {
+          setSelectData(historyData[0]);
+          setSearchData(historyData);
+        }
+      });
+    }
+  }, [loading]);
+
+  // auto search
+  useEffect(() => {
+    if (!keywords?.trim()) {
+      // default show history
+      setSearchData(historyData);
+      setSelectData(historyData?.[0]);
+      return;
+    }
+    // 匹配关键字排除所有空格
+    const result = (fuse?.search(keywords) || []).map(({ item }) => item);
+    setSearchData(result);
+    setSelectData(result?.[0]);
+  }, [keywords]);
+
+  const [isOpening, setIsOpening] = useState(false);
+  /**
+   * 打开
+   * @param openData
+   */
+  const open = async (openData?: IOmniSearchData) => {
+    if (isOpening) {
+      return;
+    }
+    setIsOpening(true);
+    const currentTab = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    const activeTabUrl = currentTab[0]?.url || "";
+    const isBlank = ["about:blank", "chrome://newtab/"].includes(activeTabUrl);
+    try {
+      const { useDefaultSE } = setting;
+      // search to default SE
+      if (!openData && keywords && +useDefaultSE === 1) {
+        await chrome.search.query({
+          disposition: "NEW_TAB",
+          text: keywords,
+        });
+      } else {
+        // 为空不做任何事情
+        if (!openData) {
+          return;
+        }
+        // 判断是否为已经打开的tab，已经打开的tab不记录历史，并且直接切换
+        if (openData.isOpenTab) {
+          await switchTab(parseFloat(openData.id), openData.windowId);
+          closePopup();
+          return;
+        }
+        const currentHistoryData = [...historyData];
+        const index = currentHistoryData.findIndex((b) => b.id === openData.id);
+        if (index > -1) {
+          currentHistoryData.splice(index, 1);
+        }
+        currentHistoryData.unshift(openData);
+        if (currentHistoryData.length > MAX_HISTORY_COUNT) {
+          currentHistoryData.pop();
+        }
+        setHistoryData(currentHistoryData);
+        // 加入缓存
+        await setStorage(
+          OMNI_SEARCH_HISTORY_KEY,
+          currentHistoryData.map((m) => m.id),
+        );
+        // 如果是空白标签，则修改当前空白标签的url
+        if (isBlank) {
+          await chrome.tabs.update(currentTab[0].id, { url: openData.url });
+        } else {
+          await chrome.tabs.create({ url: openData.url });
+        }
+      }
+      closePopup();
+    } catch (e) {
+      console.error(e);
+      void createSystemNotification(
+        `出现未知错误,请刷新重试，或者提交issue至：https://github.com/llxq/bookmark-search/issues`,
+      );
+    }
+  };
+
+  return {
+    keywords,
+    setKeywords,
+    historyData,
+    searchData,
+    open,
+    selectData,
+    setSelectData,
+    setting,
+  };
+};

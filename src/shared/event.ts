@@ -1,143 +1,37 @@
+import {
+  CUSTOM_ADD_COLLECTION_DATA_STORAGE_KEY,
+  EVENT_TIMEOUT,
+} from "./constants.ts";
 import { db } from "./Db.ts";
-import { createNotification, createSystemNotification } from "./notice.ts";
-import type { IBookmark, ITemporaryData } from "./types.ts";
+import { EOmniEvent } from "./enum.ts";
+import { setStorage } from "./storage.ts";
+import type { IOmniCollectSearchData, IOmniSearchData } from "./types.ts";
 
 /**
- * 获取用户临时数据
- */
-export const GET_USER_TEMPORARY_DATA = "GET_USER_TEMPORARY_DATA";
-
-/**
- * 事件超时时间
- * @default 2s
- */
-export const EVENT_TIMEOUT = 2000;
-
-/**
- * 右键菜单id
- */
-const CONTEXT_MENU_ID = "add_temporary_data";
-/**
- * 默认添加
- */
-const CONTEXT_MENU_DEFAULT_ID = "add_default_data";
-/**
- * 自定义添加
- */
-const CONTEXT_MENU_CUSTOM_ID = "add_custom_data";
-
-/**
- * 标识当前popup是什么类型
- */
-export const POPUP_TYPE_KEY = "popup_type";
-
-/**
- * 根据tab创建书签数据
+ * 打开添加收藏数据的页面
+ * @param data
  * @param tab
  */
-const createBookmarkByTab = (tab: chrome.tabs.Tab) => {
-  return {
-    url: tab.url!,
-    title: tab.title!,
-    id: `${tab.id}_${Date.now()}`,
-    parentId: "",
-    parentTitle: "",
-    faviconURL: tab.favIconUrl || "",
-  };
-};
-
-/**
- * 打开设置临时数据的页面
- * @param temporaryData
- * @param tab
- */
-const openSetTemporaryDataPage = (
-  temporaryData: IBookmark,
+export const openAddCollectionDataPage = async (
+  data: IOmniSearchData,
   tab: chrome.tabs.Tab,
 ) => {
-  chrome.storage.local
-    .set({
-      [POPUP_TYPE_KEY]: {
-        ...temporaryData,
-        _t: Date.now(),
-      },
-    })
-    .then(() => {
-      // 先关闭
-      chrome.action.openPopup({
-        windowId: tab.windowId,
-      });
-    });
-};
-
-/*
- * 注册右键菜单
- */
-export const registerContextMenu = () => {
-  chrome.runtime.onInstalled.addListener(() => {
-    // add context menu
-    chrome.contextMenus.removeAll(() => {
-      chrome.contextMenus.create({
-        id: CONTEXT_MENU_ID,
-        title: "添加到书签搜索项",
-        contexts: ["all"],
-      });
-      chrome.contextMenus.create({
-        id: CONTEXT_MENU_DEFAULT_ID,
-        title: "使用当前网站名称添加",
-        parentId: CONTEXT_MENU_ID,
-        contexts: ["all"],
-      });
-      chrome.contextMenus.create({
-        id: CONTEXT_MENU_CUSTOM_ID,
-        title: "自定义名称添加",
-        parentId: CONTEXT_MENU_ID,
-        contexts: ["all"],
-      });
-    });
+  // 是为了关闭原有的popup
+  await chrome.windows.update(tab.windowId, {
+    focused: true,
   });
-
-  chrome.contextMenus.onClicked.addListener((info, tab) => {
-    if (tab) {
-      const temporaryData: IBookmark = createBookmarkByTab(tab);
-      if (info.menuItemId === CONTEXT_MENU_DEFAULT_ID) {
-        db.add(temporaryData).then(() => {
-          createNotification("添加成功");
-        });
-      } else if (info.menuItemId === CONTEXT_MENU_CUSTOM_ID) {
-        openSetTemporaryDataPage(temporaryData, tab);
-      }
-    }
+  await setStorage(CUSTOM_ADD_COLLECTION_DATA_STORAGE_KEY, data);
+  await chrome.action.openPopup({
+    windowId: tab.windowId,
   });
 };
 
 /**
- * 注册快捷键监听
+ * 获取收藏的数据
+ * @description 目前数据
  */
-export const registerShortcut = () => {
-  chrome.commands.onCommand.addListener((command) => {
-    if (command === "add_temporary_bookmark") {
-      chrome.tabs.query({ active: true, currentWindow: true }).then((res) => {
-        const [tab] = res;
-        if (!tab) {
-          createNotification("无法获取当前tab，请刷新重试");
-          return;
-        }
-        if (chrome.runtime.lastError) {
-          console.log(chrome.runtime.lastError.message);
-        } else {
-          openSetTemporaryDataPage(createBookmarkByTab(tab), tab);
-        }
-      });
-    }
-  });
-};
-
-/**
- * 发送获取用户临时数据
- */
-export const sendGetTemporaryDataEvent = async () => {
-  return new Promise<ITemporaryData[]>((resolve) => {
+export const getCollectionData = async () => {
+  return new Promise<IOmniCollectSearchData[]>((resolve) => {
     // eslint-disable-next-line
     let timeout: TUndefinable<ReturnType<typeof setTimeout>>;
     const reject = () => {
@@ -145,9 +39,9 @@ export const sendGetTemporaryDataEvent = async () => {
       timeout && clearTimeout(timeout);
     };
     timeout = setTimeout(reject, EVENT_TIMEOUT);
-    // 获取本程序的扩展id
+    // 发送获取收藏数据事件
     chrome.runtime.sendMessage(
-      { type: GET_USER_TEMPORARY_DATA },
+      { type: EOmniEvent.GET_ALL_COLLECTION_DATA },
       (responseFromContent) => {
         if (chrome.runtime.lastError) {
           console.log(chrome.runtime.lastError.message);
@@ -166,39 +60,15 @@ export const sendGetTemporaryDataEvent = async () => {
 };
 
 /**
- * 接收获取用户临时数据
+ * 获取所有的收藏数据
  */
-export const onGetTemporaryData = () => {
+export const onGetAllCollectionDataByDb = () => {
   chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
-    if (request.type === GET_USER_TEMPORARY_DATA) {
+    if (request.type === EOmniEvent.GET_ALL_COLLECTION_DATA) {
       db.getAll().then((data) => {
         sendResponse({ data });
       });
       return true;
-    }
-  });
-};
-
-/**
- * 设置用户临时数据
- */
-export const SET_USER_TEMPORARY_DATA = "SET_USER_TEMPORARY_DATA";
-/**
- * 设置用户临时数据
- */
-export const onSetUserTemporaryData = () => {
-  chrome.runtime.onMessage.addListener(({ type, data }) => {
-    if (type === SET_USER_TEMPORARY_DATA) {
-      if (data.createdTime) {
-        // 修改
-        db.update(data).then(() => {
-          void createSystemNotification("临时书签修改成功");
-        });
-        return;
-      }
-      db.add(data).then(() => {
-        void createSystemNotification("临时书签保存成功");
-      });
     }
   });
 };

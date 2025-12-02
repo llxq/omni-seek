@@ -1,0 +1,74 @@
+:root{
+  --omni-search-input-border-radius: 4px;
+  --omni-search-input-padding: 8px 12px;
+
+  --omni-border-size: 1px;
+
+  --omni-item-height: 48px;
+  --omni-font-size-lg: 16px;
+  --omni-font-size-base: 14px;
+  --omni-font-size-sm: 12px;
+}
+
+.base-theme {
+  --omni-primary-color: #4096ff;
+
+  --omni-success-color: #52c41a;
+  --omni-warning-color: #faad14;
+  --omni-error-color: #ff4d4f;
+
+  /* 收藏 tag (金色/警告色) */
+  --omni-collect-tag-color: #faad14;
+  --omni-collect-tag-bg-color: #fffbe6;
+
+  /* 已打开 tab tag (绿色/成功色) */
+  --omni-tab-tag-color: #52c41a;
+  --omni-tab-tag-bg-color: #f6ffed;
+
+  --omni-search-input-placeholder-color: #999;
+}
+
+/**
+ * 浅色主题
+ */
+.light-theme {
+  --omni-bg-color: #fff;
+  --omni-bg-disabled-color: #f5f5f5;
+
+  --omni-border-color: #e0e0e0;
+  --omni-form-item-component-border-color: #e0e0e0;
+
+  --omni-text-primary: #333333;
+  --omni-text-secondary: #5f6368;
+  --omni-text-tertiary: #9aa0a6;
+
+  --omni-search-input-text-color: var(--omni-text-primary);
+
+  --omni-primary-hover-color: #ecf5ff;
+
+  @extend .base-theme;
+}
+
+/**
+ * 深色主题
+ */
+.dark-theme {
+  --omni-bg-color: #202124;
+  --omni-bg-disabled-color: #292a2d;
+
+  --omni-border-color: #3c4043;
+  --omni-form-item-component-border-color: #3c4043;
+
+  --omni-text-primary: #E5EAF3;
+  --omni-text-secondary: #CFD3DC;
+  --omni-text-tertiary: #A3A6AD;
+
+  --omni-search-input-text-color: var(--omni-bg-color);
+
+  --omni-primary-hover-color: #26384f;
+
+  @extend .base-theme;
+
+  --omni-collect-tag-bg-color: rgba(250, 173, 20, 0.15); /* 金色 15% 透明度 */
+  --omni-tab-tag-bg-color: rgba(82, 196, 26, 0.15);      /* 绿色 15% 透明度 */
+}

@@ -1,11 +1,3 @@
-import {
-  onGetTemporaryData,
-  onSetUserTemporaryData,
-  registerContextMenu,
-  registerShortcut,
-} from "./shared/event.ts";
+import { bootstrapBackground } from "./shared/register.ts";
 
-registerShortcut();
-registerContextMenu();
-onGetTemporaryData();
-onSetUserTemporaryData();
+bootstrapBackground();

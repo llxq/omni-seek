@@ -1,0 +1,39 @@
+.add-collect__container {
+  width: max-content;
+  height: max-content;
+  padding: 24px 16px;
+
+  .add-collect__header {
+    .title {
+      text-align: left;
+      font-size: var(--omni-font-size-base);
+      color: var(--omni-text-primary);
+      margin-bottom: 8px;
+    }
+  }
+
+  .add-collect__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 32px;
+
+    .is-button {
+      padding: 0 12px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 14px;
+      border: 1px solid var(--omni-primary-color);
+      color: var(--omni-primary-color);
+
+      &.is-primary {
+        background-color: var(--omni-primary-color);
+        color: #fff;
+      }
+    }
+  }
+}

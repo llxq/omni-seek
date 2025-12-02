@@ -48,7 +48,7 @@
   width: 14px;
   height: 14px;
   border-radius: 2px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--omni-form-item-component-border-color);
   background: #fff;
   box-sizing: border-box;
   transition: all .18s cubic-bezier(.2,.8,.2,1);
@@ -71,8 +71,8 @@
 }
 
 .checkbox input[type="checkbox"]:checked + span::before {
-  background: #1890ff;
-  border-color: #1890ff;
+  background: var(--omni-primary-color);
+  border-color: var(--omni-primary-color);
 }
 
 .checkbox input[type="checkbox"]:checked + span::after {
@@ -82,7 +82,7 @@
 }
 
 .checkbox:hover > span::before {
-  border-color: #40a9ff;
+  border-color: var(--omni-primary-color);
 }
 
 .checkbox input[type="checkbox"]:focus + span::before {
@@ -92,19 +92,4 @@
 
 .checkbox:active > span::before {
   transform: translateY(-50%) scale(.98);
-}
-
-.checkbox input[type="checkbox"]:disabled + span {
-  color: #bfbfbf;
-  cursor: not-allowed;
-}
-
-.checkbox input[type="checkbox"]:disabled + span::before {
-  background: #f5f5f5;
-  border-color: #d9d9d9;
-}
-
-.checkbox input[type="checkbox"]:checked:disabled + span::before {
-  background: #bae7ff;
-  border-color: #bae7ff;
 }

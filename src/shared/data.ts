@@ -1,70 +1,11 @@
-import type {
-  IBookmark,
-  ISearchBookmarkSetting,
-  TSearchRule,
-} from "./types.ts";
-
-/**
- * 搜索匹配的时候默认的权重
- */
-export const DEFAULT_WEIGHT = 100;
-
-/**
- * 获取默认设置
- */
-export const getDefaultSetting = (): ISearchBookmarkSetting => {
-  return {
-    openNewTab: "1",
-    searchRule: ["url", "title", "parentTitle"],
-    useDefaultSearch: "0",
-    enableExtensionSearch: "0",
-    searchOpenedTab: "0",
-  };
-};
-
-export const ruleSettingToWeight: Partial<Record<TSearchRule, number>> = {
-  title: 100,
-  url: 60,
-  parentTitle: 30,
-};
-
-/**
- * 给设定的搜索规则增加去除空格的内容
- */
-export const getFuseSearchResult = (item: IBookmark) => {
-  const defaultSetting = getDefaultSetting();
-  return {
-    ...item,
-    ...defaultSetting.searchRule.reduce((pre, cur) => {
-      const value = Reflect.get(item, cur) as string;
-      if (!value) return pre;
-      Reflect.set(pre, `${cur}NoSpace`, value.replace(/\s+/g, ""));
-      return pre;
-    }, {}),
-  };
-};
-
-/**
- * 切换到一个tab，并且让窗口聚焦
- */
-export const switchTab = async (activeTabId?: number, windowId?: number) => {
-  await Promise.all([
-    // 切换激活的tab
-    chrome.tabs.update(activeTabId, { active: true }),
-    (async () => {
-      if (windowId) {
-        // 切换激活的窗口
-        await chrome.windows.update(windowId, { focused: true });
-      }
-    })(),
-  ]);
-};
+import { getCollectionData } from "./event.ts";
+import type { IOmniSearchData } from "./types.ts";
 
 /**
  * 获取favicon
  * @param pageUrl
  */
-export const getFaviconURL = (pageUrl?: string): string => {
+const getFaviconURL = (pageUrl?: string): string => {
   if (!pageUrl) {
     return "";
   }
@@ -79,11 +20,11 @@ export const getFaviconURL = (pageUrl?: string): string => {
  * @param node
  * @param parentTitle
  */
-export const processBookmarks = (
+const processBookmarks = (
   node: chrome.bookmarks.BookmarkTreeNode[],
   parentTitle = "",
-) => {
-  const bookmarks: IBookmark[] = [];
+): IOmniSearchData[] => {
+  const bookmarks: IOmniSearchData[] = [];
   for (const bookmarkTreeNode of node) {
     const currentTitle = parentTitle
       ? `${parentTitle}/${bookmarkTreeNode.title}`
@@ -111,13 +52,13 @@ export const processBookmarks = (
  */
 export const getAllOpenTabs = async (
   searchOpenedTab: boolean,
-): Promise<IBookmark[]> => {
+): Promise<IOmniSearchData[]> => {
   if (!searchOpenedTab) {
     return [];
   }
   const windows = await chrome.windows.getAll({ populate: false });
   const sortedWindows = windows.sort((a, b) => a.id! - b.id!);
-  const bookmarks: IBookmark[] = [];
+  const bookmarks: IOmniSearchData[] = [];
   const length = sortedWindows.length;
   for (let i = 0; i < length; i++) {
     const tabs = await chrome.tabs.query({ windowId: sortedWindows[i].id });
@@ -137,4 +78,24 @@ export const getAllOpenTabs = async (
     });
   }
   return bookmarks;
+};
+
+/**
+ * 获取所有的搜索数据
+ * @param searchOpenedTab 是否搜索打开的tab
+ */
+export const getAllSearchData = async (searchOpenedTab: boolean) => {
+  const [bookmarks, collectionData, openTabs] = await Promise.all([
+    processBookmarks(await chrome.bookmarks.getTree()),
+    getCollectionData(),
+    getAllOpenTabs(searchOpenedTab),
+  ]);
+  return [
+    ...openTabs,
+    ...bookmarks,
+    ...collectionData.map((m) => ({
+      ...m,
+      isCollect: true,
+    })),
+  ];
 };

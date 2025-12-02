@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Bookmarks search",
-  "version": "2.0.0",
-  "description": "基于chrome的书签搜索插件。",
+  "name": "Omni 搜",
+  "version": "3.0.0",
+  "description": "\uD83D\uDE80 极致、纯净、隐私优先的 Chrome 全局搜索扩展",
   "icons": {
     "16": "icons/icon.png"
   },
@@ -30,15 +30,15 @@
         "default": "Ctrl+K",
         "mac": "Command+K"
       },
-      "description": "打开书签搜索",
+      "description": "打开 Omni 搜",
       "global": true
     },
-    "add_temporary_bookmark": {
+    "open_custom_add_collection_data_page": {
       "suggested_key": {
         "default": "Ctrl+Shift+K",
         "mac": "Command+Shift+K"
       },
-      "description": "将当前页面添加为临时书签",
+      "description": "将当前页面添加到 Omni 收藏",
       "global": true
     }
   },

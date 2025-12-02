@@ -1,4 +1,4 @@
-import "./Search.scss";
+import "./search.scss";
 import {
   useCallback,
   useEffect,
@@ -6,39 +6,26 @@ import {
   useRef,
   useState,
 } from "react";
-import { closeSearch, useSearch } from "./useSearch.ts";
-
-/**
- * 获取最新值
- * @param value
- */
-function useLatest<T>(value: T) {
-  const ref = useRef(value);
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref;
-}
+import { SearchInput } from "../../components/search-input/SearchInput.tsx";
+import { closePopup, getTagDefinition, useLatest } from "../../shared/utils.ts";
+import { useSearch } from "./hooks/useSearch.ts";
 
 export const Search = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const selectedRectRef = useRef<HTMLDivElement>(null);
+  const [selectedRect, setSelectedRect] = useState({ top: 0, height: 0 });
   const [isComposition, setIsComposition] = useState(false);
   const isCompositionRef = useLatest(isComposition);
-  const selectedRectRef = useRef<HTMLDivElement>(null);
-
   const {
-    keyword,
-    setKeyword,
-    searchBookmarks,
-    open,
-    selectedId,
-    setSelectedId,
+    keywords,
+    setKeywords,
+    searchData,
     setting,
+    selectData,
+    setSelectData,
+    open,
   } = useSearch();
-
-  const searchBookmarksRef = useLatest(searchBookmarks);
-  const selectedIdRef = useLatest(selectedId);
-  const [selectedRect, setSelectedRect] = useState({ top: 0, height: 0 });
+  const searchDataRef = useLatest(searchData);
+  const selectedRef = useLatest(selectData);
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (isCompositionRef.current) {
@@ -46,26 +33,25 @@ export const Search = () => {
     }
     // esc 关闭
     if (event.key === "Escape") {
-      closeSearch();
+      closePopup();
       return;
     }
 
-    const index = searchBookmarksRef.current.findIndex(
-      (f) => f.id === selectedIdRef.current,
+    const index = searchDataRef.current.findIndex(
+      (f) => f.id === selectedRef.current?.id,
     );
+    const length = searchDataRef.current.length - 1;
     if (index > -1) {
       /* 按上/下箭头切换 */
       if (event.key === "ArrowUp") {
-        const nextIndex =
-          index === 0 ? searchBookmarksRef.current.length - 1 : index - 1;
-        setSelectedId(searchBookmarksRef.current[nextIndex].id);
+        const nextIndex = index === 0 ? length : index - 1;
+        setSelectData(searchDataRef.current[nextIndex]);
         event.preventDefault();
       }
 
       if (event.key === "ArrowDown") {
-        const nextIndex =
-          index === searchBookmarksRef.current.length - 1 ? 0 : index + 1;
-        setSelectedId(searchBookmarksRef.current[nextIndex].id);
+        const nextIndex = index === length ? 0 : index + 1;
+        setSelectData(searchDataRef.current[nextIndex]);
         event.preventDefault();
       }
     }
@@ -85,7 +71,9 @@ export const Search = () => {
   }, []);
 
   useEffect(() => {
-    const selectedElement = document.querySelector(`[data-id="${selectedId}"]`);
+    const selectedElement = document.querySelector(
+      `[data-id="${selectData?.id}"]`,
+    );
     if (selectedElement) {
       // 判断是否在区间内
       const { top, height } = selectedElement.getBoundingClientRect();
@@ -100,95 +88,96 @@ export const Search = () => {
         });
       }
     }
-  }, [selectedId, selectedIdRef]);
+  }, [selectData]);
 
   return (
     <div className="search__container">
-      <div className="search__input-container">
+      <div className="search__input-wrapper">
         <div className="tips">
           Enter 打开选中项、Esc 取消、↑ 或 ↓
           切换选中项。已打开标识中的两个数字代表：窗口/Tab
         </div>
-        <input
-          placeholder="请输入要搜索的关键字"
-          type="text"
-          autoComplete="off"
-          className="search__input"
-          autoFocus
-          ref={inputRef}
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          onCompositionStart={() => setIsComposition(true)}
-          onCompositionEnd={() => setIsComposition(false)}
-          onKeyDown={(e) => {
-            if (!isComposition && e.key === "Enter") {
-              void open(selectedId, e.metaKey || e.ctrlKey);
-              e.preventDefault();
-            }
-          }}
+        <SearchInput
+          value={keywords}
+          setValue={setKeywords}
+          setIsComposition={setIsComposition}
+          onEnter={() => open(selectData)}
         />
       </div>
-      <div className="search__result-container">
-        <div className="search__list" ref={selectedRectRef}>
-          {searchBookmarks.map((item) => (
-            <div
-              onClick={(event) => open(item.id, event.metaKey || event.ctrlKey)}
-              className={`search__list-item ${selectedId === item.id ? "search__list-item-active" : ""}`}
-              data-id={item.id}
-              key={item.id}
-            >
-              <div className="favicon__container">
-                <img
-                  src={
-                    item.faviconURL ||
-                    chrome.runtime.getURL("icons/default_favicon.png")
-                  }
-                  alt={item.title}
-                />
-              </div>
-              <div className="search__list-item-content">
+      {searchData.length ? (
+        <div className="search__result">
+          <div className="search__result-list" ref={selectedRectRef}>
+            {searchData.map((data) => {
+              const tag = getTagDefinition(data);
+              return (
                 <div
-                  className={`title__container ${item.isTemporary || item.isOpenTab ? "is-temporary__container" : ""}`}
+                  className={`list-item ${data.id === selectData?.id ? "is-selected" : ""}`}
+                  onClick={() => open(data)}
+                  data-id={data.id}
+                  key={data.id}
                 >
-                  <div className="title" title={item.title}>
-                    {item.title}
-                  </div>
-                  {item.isTemporary ? (
-                    <div className="is-temporary">临时</div>
-                  ) : null}
-                  {item.isOpenTab ? (
-                    <div className="is-temporary is-open">
-                      已在 {item.windowIndex} / {item.tabIndex} 打开
+                  <img
+                    className="list-item__favicon"
+                    src={
+                      data.faviconURL ||
+                      chrome.runtime.getURL("icons/default_favicon.png")
+                    }
+                    alt={data.title}
+                  />
+                  <div className="list-item__content">
+                    <div className={`content__title ${tag ? "has-tag" : ""}`}>
+                      <div className="title" title={data.title}>
+                        {data.title}
+                      </div>
+                      {tag ? (
+                        <div
+                          className="tag"
+                          style={{
+                            color: tag.color,
+                            backgroundColor: tag.bgColor,
+                          }}
+                        >
+                          {tag.text}
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
-                </div>
-                <div className="url" title={item.url}>
-                  {item.url}
-                </div>
-                {item.parentTitle ? (
-                  <div className="path" title={item.parentTitle}>
-                    <img
-                      className="icon"
-                      src={chrome.runtime.getURL("icons/dir_icon.png")}
-                      alt="文件夹"
-                    />
-                    <div className="path__label">
-                      {item.parentTitle.split("/").join(" / ")}
+                    <div className="content__url" title={data.url}>
+                      {data.url}
                     </div>
+                    {data.parentTitle ? (
+                      <div className="content__path" title={data.parentTitle}>
+                        <img
+                          className="icon"
+                          src={chrome.runtime.getURL("icons/dir_icon.png")}
+                          alt="文件夹"
+                        />
+                        <div className="path__label">
+                          {data.parentTitle.split("/").join(" / ")}
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
-                ) : null}
-              </div>
-            </div>
-          ))}
-        </div>
-        {!searchBookmarks.length ? (
-          <div className="no-result">
-            {setting.useDefaultSearch === "1"
-              ? `回车即可通过默认浏览器搜索 ${keyword}`
-              : "未找到结果，请尝试其他关键字"}
+                </div>
+              );
+            })}
           </div>
-        ) : null}
-      </div>
+        </div>
+      ) : (
+        <div className="search__result-empty">
+          {setting.useDefaultSE === "1" ? (
+            keywords.trim() ? (
+              <span>
+                回车即可通过默认浏览器搜索【
+                <span className="keywords">{keywords}</span>】
+              </span>
+            ) : (
+              "请输入关键字进行搜索"
+            )
+          ) : (
+            "未找到结果，请尝试其他关键字"
+          )}
+        </div>
+      )}
     </div>
   );
 };

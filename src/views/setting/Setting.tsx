@@ -1,19 +1,22 @@
 import "./setting.scss";
 import { useEffect, useState } from "react";
+import { Checkbox } from "../../components/checkbox/Checkbox.tsx";
+import { FormItem } from "../../components/form-item/FormItem.tsx";
+import { Radio, RadioGroup } from "../../components/radio/Radio.tsx";
+import { OMNI_SEARCH_SETTING_KEY } from "../../shared/constants.ts";
 import { createNotification } from "../../shared/notice.ts";
-import { getDefaultSetting } from "../../shared/shared.ts";
-import { getStorage } from "../../shared/storage.ts";
-import type { ISearchBookmarkSetting } from "../../shared/types.ts";
-import { Checkbox } from "../checkbox/Checkbox.tsx";
-import { FormItem } from "../form-item/FormItem.tsx";
-import { Radio, RadioGroup } from "../radio/Radio.tsx";
+import { getDefaultSetting } from "../../shared/setting.ts";
+import { getStorage, setStorage } from "../../shared/storage.ts";
+import type {
+  IOmniSearchSetting,
+  IOmniSeekTabParams,
+  TTheme,
+} from "../../shared/types.ts";
 
-export const SETTING_STORAGE_KEY = "searchBookmarkSetting";
-
-export const Setting = () => {
+export const Setting = ({ updateTheme }: IOmniSeekTabParams) => {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] =
-    useState<ISearchBookmarkSetting>(getDefaultSetting());
+    useState<IOmniSearchSetting>(getDefaultSetting());
 
   const [saveLoading, setSaveLoading] = useState(false);
   const submit = async () => {
@@ -21,20 +24,22 @@ export const Setting = () => {
       return;
     }
     setSaveLoading(true);
+    // 更新主题
+    updateTheme?.(formData.theme);
     try {
-      await chrome.storage.local.set({ searchBookmarkSetting: formData });
-      createNotification("设置已保存");
+      await setStorage(OMNI_SEARCH_SETTING_KEY, formData);
+      createNotification("操作成功");
     } finally {
       setSaveLoading(false);
     }
   };
 
-  const updateFormData = (data: Partial<ISearchBookmarkSetting>) => {
+  const updateFormData = (data: Partial<IOmniSearchSetting>) => {
     setFormData({ ...formData, ...data });
   };
 
   useEffect(() => {
-    getStorage(SETTING_STORAGE_KEY).then((result) => {
+    getStorage(OMNI_SEARCH_SETTING_KEY).then((result) => {
       if (result) {
         setFormData({ ...formData, ...result });
       }
@@ -47,31 +52,18 @@ export const Setting = () => {
     !loading && (
       <div className="setting__container">
         <div className="setting__content">
-          <FormItem
-            label="是否打开已存在匹配的标签页"
-            tips="按住 Ctrl/Command 键可以强制新窗口打开"
-          >
-            <RadioGroup
-              name="openNewTab"
-              value={formData.openNewTab}
-              onChange={(value) => updateFormData({ openNewTab: value })}
-            >
-              <Radio value="1">是（通过匹配域名查找已打开页面）</Radio>
-              <Radio value="0">否</Radio>
-            </RadioGroup>
-          </FormItem>
           <FormItem label="搜索规则">
             <Checkbox
               name="searchRule"
-              value={formData.searchRule}
+              value={formData.searchRules}
               onChange={(value) =>
                 updateFormData({
-                  searchRule: value as ISearchBookmarkSetting["searchRule"],
+                  searchRules: value as IOmniSearchSetting["searchRules"],
                 })
               }
               options={[
                 { name: "标题", value: "title" },
-                { name: "父文件夹标题", value: "parentTitle" },
+                { name: "上级目录标题", value: "parentTitle" },
                 { name: "URL", value: "url" },
               ]}
             />
@@ -91,12 +83,23 @@ export const Setting = () => {
           </FormItem>
           <FormItem label="书签不存在时是否使用默认搜索引擎搜索关键字">
             <RadioGroup
-              name="useDefaultSearch"
-              value={formData.useDefaultSearch}
-              onChange={(value) => updateFormData({ useDefaultSearch: value })}
+              name="useDefaultSE"
+              value={formData.useDefaultSE}
+              onChange={(value) => updateFormData({ useDefaultSE: value })}
             >
               <Radio value="0">否</Radio>
               <Radio value="1">是</Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem label="主题">
+            <RadioGroup
+              name="theme"
+              value={formData.theme}
+              onChange={(value) => updateFormData({ theme: value as TTheme })}
+            >
+              <Radio value="auto">自动</Radio>
+              <Radio value="light">浅色</Radio>
+              <Radio value="dark">深色</Radio>
             </RadioGroup>
           </FormItem>
           <div className="setting__tips">
@@ -111,11 +114,9 @@ export const Setting = () => {
             tips="允许使用（如 '^'、'$'、'='、'!'）进行精确、前缀、后缀或反向匹配。"
           >
             <RadioGroup
-              name="enableExtensionSearch"
-              value={formData.enableExtensionSearch}
-              onChange={(value) =>
-                updateFormData({ enableExtensionSearch: value })
-              }
+              name="useAdvancedSearch"
+              value={formData.useAdvancedSearch}
+              onChange={(value) => updateFormData({ useAdvancedSearch: value })}
             >
               <Radio value="1">是</Radio>
               <Radio value="0">否</Radio>

@@ -7,14 +7,14 @@ const configs = [
   {
     entry: "src/background.ts",
     fileName: "background.js",
-    name: "BookmarkSearchBackground",
+    name: "OmniSeekBackground",
   },
   {
     entry: "src/views/main.tsx",
     plugins: [react()],
     fileName: "popup.js",
     cssFileName: "popup",
-    name: "BookmarkSearchPopup",
+    name: "OmniSeekPopup",
   },
 ];
 

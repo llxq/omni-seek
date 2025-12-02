@@ -1,4 +1,7 @@
-export interface IOpenTabBookmark {
+/**
+ * 已经打开的标签页
+ */
+export interface IOpenTabData {
   /**
    * 是否为已经打开的标签页
    */
@@ -17,27 +20,61 @@ export interface IOpenTabBookmark {
   windowIndex?: number;
 }
 
-export interface ITemporaryBookmark {
+/**
+ * 收藏的数据
+ */
+export interface ICollectData {
   /**
-   * 是否为临时数据
+   * 是否为收藏数据
    */
-  isTemporary?: boolean;
+  isCollect?: boolean;
 }
 
-export interface IBookmark extends ITemporaryBookmark, IOpenTabBookmark {
+/**
+ * 搜索的数据
+ */
+export interface IOmniSearchData extends ICollectData, IOpenTabData {
+  /**
+   * 搜索的 URL
+   */
   url: string;
+  /**
+   * 搜索的标题
+   */
   title: string;
+  /**
+   * 数据 ID
+   * @description 可能是书签的ID，也可能是 tabId 之类的
+   */
   id: string;
+  /**
+   * 书签的目录ID
+   */
   parentId?: string;
+  /**
+   * 书签的父级标题
+   */
   parentTitle?: string;
+  /**
+   * 网站的图标
+   */
   faviconURL: string;
 }
 
-export interface ITemporaryData extends IBookmark {
-  createdTime: number;
+/**
+ * 收藏的搜索数据
+ */
+export interface IOmniCollectSearchData extends IOmniSearchData {
+  /**
+   * 创建时间
+   */
+  updateTime: number;
 }
 
-export type TSearchRule = keyof IBookmark;
+/**
+ * 搜索规则
+ */
+export type TOmniSearchRule = keyof IOmniSearchData;
 
 /**
  * 0: false
@@ -45,30 +82,40 @@ export type TSearchRule = keyof IBookmark;
  */
 export type TBooleanValue = "0" | "1";
 
-export interface ISearchBookmarkSetting {
-  /**
-   * 是否在打开的时候查询是否有对应的tab，如果开启了则会优先切换到已打开的tab
-   * @default 1
-   */
-  openNewTab: TBooleanValue;
+export type TTheme = "auto" | "light" | "dark";
+
+/**
+ * 搜索设置
+ */
+export interface IOmniSearchSetting {
   /**
    * 搜索需要匹配的类型
    * @default ["url", "title", "parentTitle"]
    */
-  searchRule: TSearchRule[];
-  /**
-   * 查询结果为空的时候是否用默认搜索引擎搜索
-   * @default 0
-   */
-  useDefaultSearch: TBooleanValue;
-  /**
-   * 是否启用扩展搜索
-   * @default 0
-   */
-  enableExtensionSearch: TBooleanValue;
+  searchRules: TOmniSearchRule[];
   /**
    * 是否搜索打开的标签页
-   * @default 0
+   * @default 1
    */
   searchOpenedTab: TBooleanValue;
+  /**
+   * 查询结果为空的时候是否用默认搜索引擎搜索
+   * @default 1
+   */
+  useDefaultSE: TBooleanValue;
+  /**
+   * 是否启用高级搜索
+   * @default 0
+   */
+  useAdvancedSearch: TBooleanValue;
+  /**
+   * 主题颜色
+   * @default "auto"
+   */
+  theme: TTheme;
+}
+
+export interface IOmniSeekTabParams {
+  editCollect?: (data: IOmniCollectSearchData) => void;
+  updateTheme?: (theme: TTheme) => void;
 }
