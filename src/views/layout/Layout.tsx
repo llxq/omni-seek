@@ -51,7 +51,6 @@ export const Layout = () => {
     getStorage<IOmniCollectSearchData>(
       CUSTOM_ADD_COLLECTION_DATA_STORAGE_KEY,
     ).then((data) => {
-      console.log("存在吗？", data);
       setTemporaryData(data || void 0);
       // 用完直接删除
       void removeStorage(CUSTOM_ADD_COLLECTION_DATA_STORAGE_KEY);
