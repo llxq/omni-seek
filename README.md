@@ -70,6 +70,7 @@ cd omni-search-chrome
 - 自定义调整搜索匹配规则
 - 修改主题
 - 自定义搜索功能
+  
   <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/e9e28239-5df6-4f24-804e-235797e50aae" />
 
 ### 📌 收藏管理
@@ -82,9 +83,11 @@ cd omni-search-chrome
     - 在任意网页上点击右键
     - 选择"添加到 Omni收藏"
     - 根据自己的需求选择是否需要自定义标题，还是默认用当前网站标题加入到搜索列表中。
+      
       <img width="398" height="108" alt="image" src="https://github.com/user-attachments/assets/8becf0ca-32a7-437b-86aa-28e50787949b" />
 
     - 您还可以自定义名称，点击 `添加到 Omni收藏 / 自定义名称添加`，修改为您想要的名称然后保存即可。（注意：搜索时是根据您设置的名称来搜索的）
+      
       <img width="324" height="178" alt="image" src="https://github.com/user-attachments/assets/60e0cae8-e414-4baf-b517-3f3b4ba676ff" />
 
 2. **管理收藏**：
@@ -99,6 +102,7 @@ cd omni-search-chrome
 3. **搜索收藏**：
     - 在搜索框中输入关键词
     - 收藏会与普通书签一起显示在搜索结果中，收藏会有tag标识
+      
       <img width="600" height="276" alt="image" src="https://github.com/user-attachments/assets/0d16f6e9-7347-48ce-abd2-64678df76ac7" />
 
 4. **对于禁用了右键功能的网站**：
