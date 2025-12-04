@@ -1,8 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { GET_DPR_SESSION_KEY } from "../shared/constants.ts";
-import { getDprFromActiveTab } from "../shared/register.ts";
-import { interceptChromeRuntimeLastError } from "../shared/utils.ts";
+import {
+  getDprFromActiveTab,
+  interceptChromeRuntimeLastError,
+} from "../shared/utils.ts";
 import { Layout } from "./layout/Layout.tsx";
 
 const bootstrap = async () => {

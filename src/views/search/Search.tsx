@@ -23,6 +23,8 @@ export const Search = () => {
     selectData,
     setSelectData,
     open,
+    getSeKeywords,
+    isUseSEKeyword,
   } = useSearch();
   const searchDataRef = useLatest(searchData);
   const selectedRef = useLatest(selectData);
@@ -164,11 +166,14 @@ export const Search = () => {
         </div>
       ) : (
         <div className="search__result-empty">
-          {setting.useDefaultSE === "1" ? (
+          {setting.useDefaultSE === "1" || isUseSEKeyword ? (
             keywords.trim() ? (
               <span>
                 回车即可通过默认浏览器搜索【
-                <span className="keywords">{keywords}</span>】
+                <span className="keywords">
+                  {isUseSEKeyword ? getSeKeywords() : keywords}
+                </span>
+                】
               </span>
             ) : (
               "请输入关键字进行搜索"

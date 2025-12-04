@@ -1,31 +1,41 @@
 import "./add-collect.scss";
 import { useState } from "react";
 import { SearchInput } from "../../components/search-input/SearchInput.tsx";
-import { UPDATE_COLLECTION_DATA_MESSAGE_KEY } from "../../shared/constants.ts";
-import { createNotification } from "../../shared/notice.ts";
-import type { IOmniSearchData } from "../../shared/types.ts";
+import { collectDb } from "../../shared/Db.ts";
+import {
+  createNotification,
+  createSystemNotification,
+} from "../../shared/notice.ts";
+import type { IOmniCollectSearchData } from "../../shared/types.ts";
 import { closePopup } from "../../shared/utils.ts";
 
 interface IAddCollectProps {
-  data: IOmniSearchData;
+  data: IOmniCollectSearchData;
   back: () => void;
 }
 
 export const AddCollect = ({ data, back }: IAddCollectProps) => {
   const [title, setTitle] = useState(data.title || "");
 
-  const baseConfirm = async () => {
+  const baseConfirm = async (isClose = false) => {
     if (!title?.trim()) {
       createNotification("标题不能为空", "error");
       return Promise.reject();
     }
-    await chrome.runtime.sendMessage({
-      type: UPDATE_COLLECTION_DATA_MESSAGE_KEY,
-      data: {
-        ...data,
-        title: title.trim(),
-      },
-    });
+    const updateData: IOmniCollectSearchData = {
+      ...data,
+      title,
+    };
+    if (data.updateTime) {
+      await collectDb.update(updateData);
+    } else {
+      await collectDb.add(updateData);
+    }
+    if (isClose) {
+      await createSystemNotification("操作成功");
+    } else {
+      void createNotification("操作成功");
+    }
   };
 
   const cancel = () => {
@@ -37,7 +47,7 @@ export const AddCollect = ({ data, back }: IAddCollectProps) => {
   };
 
   const confirm = async () => {
-    baseConfirm().then(cancel);
+    baseConfirm(true).then(cancel);
   };
 
   return (

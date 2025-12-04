@@ -5,10 +5,11 @@ import type { IOmniSearchSetting } from "./types.ts";
  */
 export const getDefaultSetting = () => {
   return {
-    searchRules: ["url", "title", "parentTitle"],
+    searchRules: ["title", "url", "parentTitle"],
     searchOpenedTab: "1",
     useDefaultSE: "1",
     useAdvancedSearch: "0",
     theme: "auto",
+    useSEKeyword: "1",
   } as IOmniSearchSetting;
 };

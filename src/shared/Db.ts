@@ -1,15 +1,34 @@
-import type { IOmniSearchData } from "./types.ts";
+import { EDbStore } from "./enum.ts";
+import type { IClickCountData, IOmniCollectSearchData } from "./types.ts";
 
-export class BaseDb {
+/**
+ * 默认数据库
+ */
+const DB_NAME = "omni-seek_db";
+
+/**
+ * 数据库版本
+ * @description 当前版本为2
+ * 版本1: 默认只有收藏的数据
+ * 版本2: 增加了点击次数数据
+ */
+const DB_VERSION = 2;
+
+const DB_STORES = [
+  { name: EDbStore.COLLECTION, options: { keyPath: "id" } },
+  { name: EDbStore.CLICK_COUNT, options: { keyPath: "id" } },
+];
+
+export class BaseDb<T extends { id: string; updateTime?: number }> {
   public db?: IDBDatabase;
   public dbName: string;
   public storeName: string;
   public dbVersion: number;
 
-  constructor(dbName: string, storeName: string, dbVersion?: number) {
-    this.dbName = dbName;
+  constructor(storeName: string) {
     this.storeName = storeName;
-    this.dbVersion = dbVersion || 1;
+    this.dbName = DB_NAME;
+    this.dbVersion = DB_VERSION;
   }
 
   /**
@@ -37,22 +56,14 @@ export class BaseDb {
 
       request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const db: IDBDatabase = (event.target as IDBRequest).result;
-        if (!db.objectStoreNames.contains(this.storeName)) {
-          const store = db.createObjectStore(this.storeName, { keyPath: "id" });
-          store.createIndex("id", "id", { unique: true });
-        }
+        DB_STORES.forEach((storeDef) => {
+          if (!db.objectStoreNames.contains(storeDef.name)) {
+            const store = db.createObjectStore(storeDef.name, storeDef.options);
+            store.createIndex("id", "id", { unique: true });
+          }
+        });
       };
     });
-  }
-
-  /**
-   * 关闭数据库连接
-   */
-  public close(): void {
-    if (this.db) {
-      this.db.close();
-      this.db = undefined;
-    }
   }
 
   private async _getStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
@@ -61,7 +72,7 @@ export class BaseDb {
     return transaction.objectStore(this.storeName);
   }
 
-  public async add(data: IOmniSearchData): Promise<string> {
+  public async add(data: T): Promise<string> {
     const store = await this._getStore("readwrite");
     return new Promise((resolve, reject) => {
       const request = store.add({
@@ -74,7 +85,7 @@ export class BaseDb {
     });
   }
 
-  public async get(key: string): Promise<string> {
+  public async get(key: string): Promise<T> {
     const store = await this._getStore("readonly");
     return new Promise((resolve, reject) => {
       const request = store.get(key);
@@ -84,7 +95,7 @@ export class BaseDb {
     });
   }
 
-  public async getAll<T>(): Promise<T[]> {
+  public async getAll(): Promise<T[]> {
     const store = await this._getStore("readonly");
     return new Promise((resolve, reject) => {
       const request = store.getAll();
@@ -94,7 +105,7 @@ export class BaseDb {
     });
   }
 
-  public async update(data: IOmniSearchData): Promise<string> {
+  public async update(data: T): Promise<string> {
     const store = await this._getStore("readwrite");
     return new Promise((resolve, reject) => {
       const request = store.put({
@@ -118,15 +129,14 @@ export class BaseDb {
 }
 
 /**
- * 默认数据库
+ * 初始化收藏数据库
  */
-const DB_NAME = "omni-seek_db";
-/**
- * 默认数据表
- */
-const STORE_NAME = "omni-seek_store";
+export const collectDb = new BaseDb<IOmniCollectSearchData>(
+  EDbStore.COLLECTION,
+);
 
 /**
- * 初始化数据库
+ * 初始化点击次数数据库
+ * @description 目前两个用不用的实例
  */
-export const db = new BaseDb(DB_NAME, STORE_NAME);
+export const clickCountDb = new BaseDb<IClickCountData>(EDbStore.CLICK_COUNT);

@@ -2,7 +2,7 @@ import "./collect-management.scss";
 import Fuse from "fuse.js";
 import { useEffect, useState } from "react";
 import { SearchInput } from "../../components/search-input/SearchInput.tsx";
-import { db } from "../../shared/Db.ts";
+import { collectDb } from "../../shared/Db.ts";
 import { getCollectionData } from "../../shared/event.ts";
 import { createNotification } from "../../shared/notice.ts";
 import type {
@@ -43,7 +43,7 @@ export const CollectManagement = ({ editCollect }: IOmniSeekTabParams) => {
   }, []);
 
   const deleteCollect = (data: IOmniSearchData) => {
-    db.delete(data.id).then(() => {
+    collectDb.delete(data.id).then(() => {
       createNotification("删除成功");
     });
     setCollectData((c) => c.filter((d) => d.id !== data.id));

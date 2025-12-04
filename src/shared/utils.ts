@@ -1,3 +1,4 @@
+import type { FuseSortFunctionArg } from "fuse.js";
 import { useEffect, useRef } from "react";
 import { getDefaultSetting } from "./setting.ts";
 import type { IOmniSearchData } from "./types.ts";
@@ -109,4 +110,69 @@ export const interceptChromeRuntimeLastError = () => {
   if (chrome.runtime.lastError) {
     console.log("【lastError】", chrome.runtime.lastError.message);
   }
+};
+
+/**
+ * 获取当前标签页的 DPR
+ */
+export const getDprFromActiveTab = async () => {
+  const [tab] = await chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+  if (!tab || !tab.id) return null;
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => {
+        return window.devicePixelRatio;
+      },
+    });
+    if (results && results[0]) {
+      return Promise.resolve(results[0].result);
+    }
+    return Promise.resolve(null);
+  } catch (error) {
+    interceptChromeRuntimeLastError();
+    console.log("无法获取当前标签页的 DPR:", error);
+    return Promise.resolve(null);
+  }
+};
+
+/**
+ * 获取权重
+ * @param clickCount
+ */
+const getSortWeightByClickCount = (clickCount: number) => {
+  const weight = 1 - Math.log10(clickCount) * 0.1;
+  return weight > 0 ? weight : 1;
+};
+
+/**
+ * 查询排序
+ */
+export const getSearchSortFn = (
+  fuseSearchData: IOmniSearchData[],
+  isSearchOpenedTab: boolean,
+) => {
+  return (a: FuseSortFunctionArg, b: FuseSortFunctionArg): number => {
+    const itemA = fuseSearchData[a.idx];
+    const itemB = fuseSearchData[b.idx];
+    let aScore = a.score;
+    let bScore = b.score;
+    // 评分权重目前暂定 0.8
+    if (isSearchOpenedTab) {
+      aScore = itemA.isOpenTab ? aScore * 0.8 : aScore;
+      bScore = itemB.isOpenTab ? bScore * 0.8 : bScore;
+    }
+    const itemBClickCount = itemB.clickCount || 0;
+    const itemAClickCount = itemA.clickCount || 0;
+    if (itemAClickCount && aScore < 1) {
+      aScore = aScore * getSortWeightByClickCount(itemAClickCount);
+    }
+    if (itemBClickCount && bScore < 1) {
+      bScore = bScore * getSortWeightByClickCount(itemBClickCount);
+    }
+    return aScore - bScore;
+  };
 };

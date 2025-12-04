@@ -5,14 +5,10 @@ import {
   ADD_COLLECTION_DATA_CONTEXT_MENU_ID,
   CUSTOM_ADD_COLLECTION_DATA_CONTEXT_MENU_ID,
   DEFAULT_ADD_COLLECTION_DATA_CONTEXT_MENU_ID,
-  UPDATE_COLLECTION_DATA_MESSAGE_KEY,
 } from "./constants.ts";
-import { db } from "./Db.ts";
+import { collectDb } from "./Db.ts";
 import { EOmniEvent } from "./enum.ts";
-import {
-  onGetAllCollectionDataByDb,
-  openAddCollectionDataPage,
-} from "./event.ts";
+import { openAddCollectionDataPage } from "./event.ts";
 import { createSystemNotification } from "./notice.ts";
 import type { IOmniSearchData } from "./types.ts";
 import { interceptChromeRuntimeLastError } from "./utils.ts";
@@ -62,7 +58,7 @@ const registerContextMenu = () => {
     if (tab) {
       const collectionData: IOmniSearchData = createOmniCollectionByTab(tab);
       if (info.menuItemId === DEFAULT_ADD_COLLECTION_DATA_CONTEXT_MENU_ID) {
-        db.add(collectionData).then(() => {
+        collectDb.add(collectionData).then(() => {
           void createSystemNotification("添加成功");
         });
       } else if (
@@ -97,60 +93,9 @@ const registerShortcut = () => {
 };
 
 /**
- * 获取当前标签页的 DPR
- */
-export const getDprFromActiveTab = async () => {
-  const [tab] = await chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-  if (!tab || !tab.id) return null;
-  try {
-    const results = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: () => {
-        return window.devicePixelRatio;
-      },
-    });
-    if (results && results[0]) {
-      return Promise.resolve(results[0].result);
-    }
-    return Promise.resolve(null);
-  } catch (error) {
-    interceptChromeRuntimeLastError();
-    console.log("无法获取当前标签页的 DPR:", error);
-    return Promise.resolve(null);
-  }
-};
-
-/**
- * 更新收藏数据
- */
-const registerOnMessage = () => {
-  chrome.runtime.onMessage.addListener(({ type, data }) => {
-    if (type === UPDATE_COLLECTION_DATA_MESSAGE_KEY) {
-      if (data.updateTime) {
-        // 修改
-        db.update(data).then(() => {
-          void createSystemNotification("操作成功");
-        });
-        return;
-      }
-      db.add(data).then(() => {
-        void createSystemNotification("操作成功");
-      });
-    }
-  });
-};
-
-/**
  * background.js 注册
  */
 export const bootstrapBackground = () => {
   registerContextMenu();
   registerShortcut();
-  registerOnMessage();
-
-  // 所有的操作db的数据都放在background中进行
-  onGetAllCollectionDataByDb();
 };

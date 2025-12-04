@@ -59,6 +59,10 @@ export interface IOmniSearchData extends ICollectData, IOpenTabData {
    * 网站的图标
    */
   faviconURL: string;
+  /**
+   * 点击次数
+   */
+  clickCount?: number;
 }
 
 /**
@@ -68,7 +72,7 @@ export interface IOmniCollectSearchData extends IOmniSearchData {
   /**
    * 创建时间
    */
-  updateTime: number;
+  updateTime?: number;
 }
 
 /**
@@ -113,9 +117,31 @@ export interface IOmniSearchSetting {
    * @default "auto"
    */
   theme: TTheme;
+  /**
+   * 是否可以通过 :关键字 直接到是用SE搜索
+   */
+  useSEKeyword: TBooleanValue;
 }
 
+/**
+ * 搜索tab的参数
+ */
 export interface IOmniSeekTabParams {
   editCollect?: (data: IOmniCollectSearchData) => void;
   updateTheme?: (theme: TTheme) => void;
+}
+
+export interface IClickCountData {
+  /**
+   * ID
+   */
+  id: string;
+  /**
+   * 点击次数
+   */
+  clickCount: number;
+  /**
+   * 更新时间
+   */
+  updateTime?: number;
 }

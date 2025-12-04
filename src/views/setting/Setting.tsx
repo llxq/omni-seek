@@ -81,6 +81,19 @@ export const Setting = ({ updateTheme }: IOmniSeekTabParams) => {
               <Radio value="1">是</Radio>
             </RadioGroup>
           </FormItem>
+          <FormItem
+            label="是否通过 :keyword 参数使用默认搜索引擎"
+            tips=":日历 将会使用默认搜索引擎搜索日历"
+          >
+            <RadioGroup
+              name="useSEKeyword"
+              value={formData.useSEKeyword}
+              onChange={(value) => updateFormData({ useSEKeyword: value })}
+            >
+              <Radio value="0">否</Radio>
+              <Radio value="1">是</Radio>
+            </RadioGroup>
+          </FormItem>
           <FormItem label="书签不存在时是否使用默认搜索引擎搜索关键字">
             <RadioGroup
               name="useDefaultSE"

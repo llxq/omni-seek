@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   MAX_HISTORY_COUNT,
   OMNI_SEARCH_HISTORY_KEY,
   ruleSettingToWeight,
 } from "../../../shared/constants.ts";
 import { getAllSearchData } from "../../../shared/data.ts";
+import { clickCountDb } from "../../../shared/Db.ts";
 import { createSystemNotification } from "../../../shared/notice.ts";
 import { getStorage, setStorage } from "../../../shared/storage.ts";
 import type { IOmniSearchData } from "../../../shared/types.ts";
@@ -12,6 +13,7 @@ import Fuse, { type FuseOptionKey } from "fuse.js";
 import {
   closePopup,
   getFuseSearchResult,
+  getSearchSortFn,
   switchTab,
 } from "../../../shared/utils.ts";
 import { useSetting } from "./useSetting.ts";
@@ -30,12 +32,16 @@ export const useSearch = () => {
 
   // setting
   const { setting, loading } = useSetting();
+  /**
+   * 是否为通过SE搜索关键字
+   */
+  const [isUseSEKeyword, setIsUseSEKeyword] = useState(false);
 
   // init data
   useEffect(() => {
     if (!loading) {
       const isSearchOpenedTab = setting.searchOpenedTab === "1";
-
+      setIsUseSEKeyword(setting.useSEKeyword === "1");
       Promise.all([
         getAllSearchData(isSearchOpenedTab),
         getStorage<string[]>(OMNI_SEARCH_HISTORY_KEY),
@@ -66,16 +72,7 @@ export const useSearch = () => {
             ),
             useExtendedSearch: setting.useAdvancedSearch === "1",
             includeScore: isSearchOpenedTab,
-            sortFn: (a, b) => {
-              if (isSearchOpenedTab) {
-                const itemA = fuseSearchData[a.idx];
-                const itemB = fuseSearchData[b.idx];
-                const aScore = itemA.isOpenTab ? a.score * 0.8 : a.score;
-                const bScore = itemB.isOpenTab ? b.score * 0.8 : b.score;
-                return aScore - bScore;
-              }
-              return a.score - b.score;
-            },
+            sortFn: getSearchSortFn(fuseSearchData, isSearchOpenedTab),
           }),
         );
         const historyData = (historyKey || []).reduce(
@@ -96,6 +93,14 @@ export const useSearch = () => {
     }
   }, [loading]);
 
+  const getSeKeywords = useCallback(() => {
+    return keywords?.trim().startsWith(":") ? keywords.slice(1) : keywords;
+  }, [keywords]);
+
+  const keyWordsIsSEKeyword = useCallback(() => {
+    return keywords?.trim().startsWith(":");
+  }, [keywords]);
+
   // auto search
   useEffect(() => {
     if (!keywords?.trim()) {
@@ -104,11 +109,17 @@ export const useSearch = () => {
       setSelectData(historyData?.[0]);
       return;
     }
+    // 如果是:开头的，则默认走搜索引擎搜索
+    if (isUseSEKeyword && keyWordsIsSEKeyword()) {
+      setSearchData([]);
+      setSelectData(void 0);
+      return;
+    }
     // 匹配关键字排除所有空格
     const result = (fuse?.search(keywords) || []).map(({ item }) => item);
     setSearchData(result);
     setSelectData(result?.[0]);
-  }, [keywords]);
+  }, [keywords, isUseSEKeyword]);
 
   const [isOpening, setIsOpening] = useState(false);
   /**
@@ -129,10 +140,13 @@ export const useSearch = () => {
     try {
       const { useDefaultSE } = setting;
       // search to default SE
-      if (!openData && keywords && +useDefaultSE === 1) {
+      if (
+        (!openData && keywords && +useDefaultSE === 1) ||
+        (isUseSEKeyword && keyWordsIsSEKeyword())
+      ) {
         await chrome.search.query({
           disposition: "NEW_TAB",
-          text: keywords,
+          text: keyWordsIsSEKeyword() ? getSeKeywords() : keywords,
         });
       } else {
         // 为空不做任何事情
@@ -154,6 +168,11 @@ export const useSearch = () => {
         if (currentHistoryData.length > MAX_HISTORY_COUNT) {
           currentHistoryData.pop();
         }
+        // 更新点击次数
+        void clickCountDb.update({
+          id: openData.id,
+          clickCount: (openData?.clickCount || 0) + 1,
+        });
         setHistoryData(currentHistoryData);
         // 加入缓存
         await setStorage(
@@ -185,5 +204,7 @@ export const useSearch = () => {
     selectData,
     setSelectData,
     setting,
+    getSeKeywords,
+    isUseSEKeyword,
   };
 };

@@ -1,3 +1,4 @@
+import { clickCountDb } from "./Db.ts";
 import { getCollectionData } from "./event.ts";
 import type { IOmniSearchData } from "./types.ts";
 
@@ -84,13 +85,15 @@ export const getAllOpenTabs = async (
  * 获取所有的搜索数据
  * @param searchOpenedTab 是否搜索打开的tab
  */
-export const getAllSearchData = async (searchOpenedTab: boolean) => {
+export const getAllSearchData = async (
+  searchOpenedTab: boolean,
+): Promise<IOmniSearchData[]> => {
   const [bookmarks, collectionData, openTabs] = await Promise.all([
     processBookmarks(await chrome.bookmarks.getTree()),
     getCollectionData(),
     getAllOpenTabs(searchOpenedTab),
   ]);
-  return [
+  const data: IOmniSearchData[] = [
     ...openTabs,
     ...bookmarks,
     ...collectionData.map((m) => ({
@@ -98,4 +101,20 @@ export const getAllSearchData = async (searchOpenedTab: boolean) => {
       isCollect: true,
     })),
   ];
+  const clickCountData = (await clickCountDb.getAll()) || [];
+  const clickCountMap = new Map<string, number>(
+    clickCountData.map((d) => [d.id, d.clickCount]),
+  );
+  data.forEach((d) => {
+    d.clickCount = clickCountMap.get(d.id) || 0;
+    clickCountMap.delete(d.id);
+  });
+  // 删除已经不存在的数据
+  if (clickCountMap.size > 0) {
+    const ids = Array.from(clickCountMap.keys());
+    ids.forEach((id) => {
+      clickCountDb.delete(id);
+    });
+  }
+  return data;
 };
