@@ -70,7 +70,7 @@ cd omni-search-chrome
 - 自定义调整搜索匹配规则
 - 修改主题
 - 自定义搜索功能
-  <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/a249a870-878b-4d16-827e-59b16c4bf86d" />
+  <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/e9e28239-5df6-4f24-804e-235797e50aae" />
 
 ### 📌 收藏管理
 
