@@ -72,7 +72,7 @@ export class BaseDb<T extends { id: string; updateTime?: number }> {
     return transaction.objectStore(this.storeName);
   }
 
-  public async add(data: T): Promise<string> {
+  public async add(data: Omit<T, "updateTime">): Promise<string> {
     const store = await this._getStore("readwrite");
     return new Promise((resolve, reject) => {
       const request = store.add({

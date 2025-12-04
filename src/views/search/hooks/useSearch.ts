@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import Fuse, { type FuseOptionKey } from "fuse.js";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   MAX_HISTORY_COUNT,
   OMNI_SEARCH_HISTORY_KEY,
@@ -9,7 +10,6 @@ import { clickCountDb } from "../../../shared/Db.ts";
 import { createSystemNotification } from "../../../shared/notice.ts";
 import { getStorage, setStorage } from "../../../shared/storage.ts";
 import type { IOmniSearchData } from "../../../shared/types.ts";
-import Fuse, { type FuseOptionKey } from "fuse.js";
 import {
   closePopup,
   getFuseSearchResult,
@@ -28,7 +28,7 @@ export const useSearch = () => {
   // history
   const [historyData, setHistoryData] = useState<IOmniSearchData[]>([]);
   // fuse
-  const [fuse, setFuse] = useState<TUndefinable<Fuse<IOmniSearchData>>>(void 0);
+  const fuse = useRef<TUndefinable<Fuse<IOmniSearchData>>>(void 0);
 
   // setting
   const { setting, loading } = useSetting();
@@ -53,28 +53,26 @@ export const useSearch = () => {
           fuseSearchData.push(getFuseSearchResult(m));
         });
         // init fuse
-        setFuse(
-          new Fuse<IOmniSearchData>(fuseSearchData, {
-            keys: setting.searchRules.reduce(
-              (result: FuseOptionKey<IOmniSearchData>[], m) => {
-                const currentWeight = ruleSettingToWeight[m] || 0;
-                result.push({
-                  weight: currentWeight,
-                  name: m,
-                });
-                result.push({
-                  weight: currentWeight * 0.8,
-                  name: `${m}NoSpace`,
-                });
-                return result;
-              },
-              [] as string[],
-            ),
-            useExtendedSearch: setting.useAdvancedSearch === "1",
-            includeScore: isSearchOpenedTab,
-            sortFn: getSearchSortFn(fuseSearchData, isSearchOpenedTab),
-          }),
-        );
+        fuse.current = new Fuse<IOmniSearchData>(fuseSearchData, {
+          keys: setting.searchRules.reduce(
+            (result: FuseOptionKey<IOmniSearchData>[], m) => {
+              const currentWeight = ruleSettingToWeight[m] || 0;
+              result.push({
+                weight: currentWeight,
+                name: m,
+              });
+              result.push({
+                weight: currentWeight * 0.8,
+                name: `${m}NoSpace`,
+              });
+              return result;
+            },
+            [] as string[],
+          ),
+          useExtendedSearch: setting.useAdvancedSearch === "1",
+          includeScore: isSearchOpenedTab,
+          sortFn: getSearchSortFn(fuseSearchData, isSearchOpenedTab),
+        });
         const historyData = (historyKey || []).reduce(
           (result: IOmniSearchData[], item) => {
             if (dataMap.has(item)) {
@@ -91,7 +89,7 @@ export const useSearch = () => {
         setHistoryData(historyData);
       });
     }
-  }, [loading]);
+  }, [loading, setting]);
 
   const getSeKeywords = useCallback(() => {
     return keywords?.trim().startsWith(":") ? keywords.slice(1) : keywords;
@@ -101,8 +99,23 @@ export const useSearch = () => {
     return keywords?.trim().startsWith(":");
   }, [keywords]);
 
+  const debounceTimeoutRef =
+    useRef<TNullable<ReturnType<typeof setTimeout>>>(null);
+
+  const debounceSearch = useCallback(() => {
+    // 匹配关键字排除所有空格
+    const result = (fuse.current?.search(keywords) || []).map(
+      ({ item }) => item,
+    );
+    setSearchData(result);
+    setSelectData(result?.[0]);
+  }, [keywords, setSelectData, setSearchData]);
+
   // auto search
   useEffect(() => {
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
     if (!keywords?.trim()) {
       // default show history
       setSearchData(historyData);
@@ -115,11 +128,15 @@ export const useSearch = () => {
       setSelectData(void 0);
       return;
     }
-    // 匹配关键字排除所有空格
-    const result = (fuse?.search(keywords) || []).map(({ item }) => item);
-    setSearchData(result);
-    setSelectData(result?.[0]);
-  }, [keywords, isUseSEKeyword]);
+    debounceTimeoutRef.current = setTimeout(debounceSearch, 200);
+
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+        debounceTimeoutRef.current = null;
+      }
+    };
+  }, [keywords, isUseSEKeyword, historyData, setSelectData, setSearchData]);
 
   const [isOpening, setIsOpening] = useState(false);
   /**
@@ -190,8 +207,10 @@ export const useSearch = () => {
     } catch (e) {
       console.error(e);
       void createSystemNotification(
-        `出现未知错误,请刷新重试，或者提交issue至：https://github.com/llxq/bookmark-search/issues`,
+        `出现未知错误,请刷新重试，或者提交issue至：https://github.com/llxq/omni-seek/issues`,
       );
+    } finally {
+      setIsOpening(false);
     }
   };
 

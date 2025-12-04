@@ -72,7 +72,7 @@ export interface IOmniCollectSearchData extends IOmniSearchData {
   /**
    * 创建时间
    */
-  updateTime?: number;
+  updateTime: number;
 }
 
 /**
