@@ -27,13 +27,14 @@
 #### 方法一：从源码安装（推荐开发者）
 
 ```bash
-# 克隆仓库，当然您也可以使用 ssh 下载。[git@github.com:llxq/omni-search-chrome.git]
-git clone https://github.com/llxq/omni-search-chrome.git
-cd omni-search-chrome
+# 克隆仓库，当然您也可以使用 ssh 下载。[git@github.com:llxq/omni-seek.git]
+git clone https://github.com/llxq/omni-seek.git
+cd omni-seek
 # 如您需要自定义内容，可自行修改之后执行 `build` 脚本即可。
 ```
 
 #### 加载扩展
+
 1. 打开 [Chrome 扩展页面](chrome://extensions/)
 2. 启用 **开发者模式**
 3. 点击"加载已解压的扩展程序"
@@ -41,7 +42,7 @@ cd omni-search-chrome
 
 #### 方法二：直接加载（普通用户）
 
-1. 下载最新的 [Release](https://github.com/llxq/omni-search-chrome/releases)
+1. 下载最新的 [Release](https://github.com/llxq/omni-seek/releases)
 2. 解压下载的文件
 3. 按照上述 **加载扩展** 步骤执行即可。
 
@@ -50,7 +51,7 @@ cd omni-search-chrome
 <img width="1920" height="968" alt="image" src="https://github.com/user-attachments/assets/6907bd15-8d0d-452f-a1b5-59339da5387d" />
 
 - 点击固定，可以将插件固定在扩展部分，方便使用，可以直接点击插件图标唤起搜索界面。
-  
+
 <img width="320" height="110" alt="image" src="https://github.com/user-attachments/assets/60261aa6-fd74-41e3-ad68-ebfb824adde9" />
 
 ## 🎯 使用指南
@@ -67,11 +68,12 @@ cd omni-search-chrome
 ### ⚙️ 设置选项
 
 点击扩展图标打开设置页面，您可以：
+
 - 自定义调整搜索匹配规则
 - 修改主题
 - 自定义搜索功能
-  
-  <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/e9e28239-5df6-4f24-804e-235797e50aae" />
+
+<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/e9e28239-5df6-4f24-804e-235797e50aae" />
 
 ### 📌 收藏管理
 
@@ -79,52 +81,49 @@ cd omni-search-chrome
 
 #### 使用方法
 
-1. **添加收藏**：
+1.  **添加收藏**：
     - 在任意网页上点击右键
     - 选择"添加到 Omni收藏"
     - 根据自己的需求选择是否需要自定义标题，还是默认用当前网站标题加入到搜索列表中。
-      
-      <img width="398" height="108" alt="image" src="https://github.com/user-attachments/assets/8becf0ca-32a7-437b-86aa-28e50787949b" />
 
-    - 您还可以自定义名称，点击 `添加到 Omni收藏 / 自定义名称添加`，修改为您想要的名称然后保存即可。（注意：搜索时是根据您设置的名称来搜索的）
-      
-      <img width="324" height="178" alt="image" src="https://github.com/user-attachments/assets/60e0cae8-e414-4baf-b517-3f3b4ba676ff" />
+<img width="398" height="108" alt="image" src="https://github.com/user-attachments/assets/8becf0ca-32a7-437b-86aa-28e50787949b" />
 
-2. **管理收藏**：
-    - 点击扩展图标打开主界面 或者通过快捷键：`Ctrl + K` (Windows/Linux) 或 `⌘ + K` (Mac)
-    - 切换到"收藏管理"标签页
-    - 查看所有已保存的收藏数据
-    - 点击"删除"可移除不需要的收藏数据
-    - 点击"编辑"可重新编辑收藏数据名称
-  
-      <img width="600" height="218" alt="image" src="https://github.com/user-attachments/assets/2f93663e-4c6c-4249-b50d-e935d12bd864" />
+- 您还可以自定义名称，点击 `添加到 Omni收藏 / 自定义名称添加`，修改为您想要的名称然后保存即可。（注意：搜索时是根据您设置的名称来搜索的）
 
-3. **搜索收藏**：
+<img width="324" height="178" alt="image" src="https://github.com/user-attachments/assets/60e0cae8-e414-4baf-b517-3f3b4ba676ff" />
+
+2.  **管理收藏**：- 点击扩展图标打开主界面 或者通过快捷键：`Ctrl + K` (Windows/Linux) 或 `⌘ + K` (Mac) - 切换到"收藏管理"标签页 - 查看所有已保存的收藏数据 - 点击"删除"可移除不需要的收藏数据 - 点击"编辑"可重新编辑收藏数据名称
+
+<img width="600" height="218" alt="image" src="https://github.com/user-attachments/assets/2f93663e-4c6c-4249-b50d-e935d12bd864" />
+
+3.  **搜索收藏**：
     - 在搜索框中输入关键词
     - 收藏会与普通书签一起显示在搜索结果中，收藏会有tag标识
-      
-      <img width="600" height="276" alt="image" src="https://github.com/user-attachments/assets/0d16f6e9-7347-48ce-abd2-64678df76ac7" />
 
-4. **对于禁用了右键功能的网站**：
+<img width="600" height="276" alt="image" src="https://github.com/user-attachments/assets/0d16f6e9-7347-48ce-abd2-64678df76ac7" />
+
+4.  **对于禁用了右键功能的网站**：
     - 您可以通过快捷键 `Ctrl + Shift + K` 打开保存窗口保存即可。
-  
+
 ### 🔍 搜索
+
 1. 搜索结果tag说明
     - 标签：W1 / T10
-      - 说明在是打开的标签页：在第 `1` 个浏览器窗口，第 `10` 个浏览器tab
+        - 说明在是打开的标签页：在第 `1` 个浏览器窗口，第 `10` 个浏览器tab
     - 收藏
-      - 表示为收藏数据
+        - 表示为收藏数据
     - 无tag
-      - 表示为书签数据
-
+        - 表示为书签数据
 
 ### 🎨 主题参考
+
 #### light
+
 <img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/24894cc7-ee95-43fa-b703-e335c6d61949" />
 
 #### dark
-<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/53e6b118-b185-407e-9474-755b206e1460" />
 
+<img width="600" height="600" alt="image" src="https://github.com/user-attachments/assets/53e6b118-b185-407e-9474-755b206e1460" />
 
 ## 🔧 开发指南
 
@@ -141,6 +140,7 @@ omni-seek/
 ├── src/                     # 源代码
 │   ├── assets/              # 静态资源与样式
 │   │   └── styles/          # 全局样式
+│   ├── background.ts        # 扩展后台脚本
 │   ├── components/          # 通用 React 组件
 │   │   ├── checkbox/        # 复选框组件
 │   │   ├── form-item/       # 表单项组件
@@ -150,6 +150,7 @@ omni-seek/
 │   ├── types/               # TypeScript 类型定义
 │   └── views/               # 业务视图
 │       ├── layout/          # 公共布局
+│       ├── main.tsx         # React 应用入口
 │       ├── search/          # 搜索主界面
 │       │   └── hooks/       # 搜索相关 Hooks
 │       ├── setting/         # 设置页面
@@ -167,13 +168,13 @@ omni-seek/
 
 ```bash
 # 开发模式 (热重载)
-npm run dev
+pnpm dev
 
 # 构建生产版本
-npm run build
+pnpm build
 
 # 代码检查
-npm run lint
+pnpm lint
 ```
 
 ### 贡献指南
@@ -187,28 +188,31 @@ npm run lint
 ## ❓ 常见问题
 
 - **为什么快捷键不生效？**
-  1. 请访问 [快捷键修改](chrome://extensions/shortcuts) 重新设置快捷键，重新设置为 `Ctrl/⌘ + K` 或者您想要的快捷键即可激活。
-  2. 可能是与其他扩展或应用程序的快捷键冲突。请访问 [快捷键修改](chrome://extensions/shortcuts) 修改扩展的快捷键。
-  
+    1. 请访问 [快捷键修改](chrome://extensions/shortcuts) 重新设置快捷键，重新设置为 `Ctrl/⌘ + K` 或者您想要的快捷键即可激活。
+    2. 可能是与其他扩展或应用程序的快捷键冲突。请访问 [快捷键修改](chrome://extensions/shortcuts) 修改扩展的快捷键。
+
  <img width="1920" height="352" alt="image" src="https://github.com/user-attachments/assets/7cf2b5ea-3b52-46c7-84b8-0d439876cf52" />
 
-
 - **为什么有些书签搜索不到？**
-  1. 设置中的搜索规则是否包含了相关字段（标题/URL/父文件夹）
-  2. 尝试使用更精确的关键词
-  3. 确认书签是否存在于当前浏览器的书签中
+    1. 设置中的搜索规则是否包含了相关字段（标题/URL/父文件夹）
+    2. 尝试使用更精确的关键词
+    3. 确认书签是否存在于当前浏览器的书签中
 
 - **windows 下 build 命令执行失败？**
-  1. 删除 `package-locak.json` 文件
-  2. 删除之前安装的 `node_modules` 文件
-  3. 清除安装过的 npm 缓存：`npm cache clean --force`
-  4. 重新执行 build 命令：`npm run build`
-  5. 如果还是不行，请提交 [Issues](https://github.com/llxq/omni-seek/issues) 并附带您的报错截图
+    - **重要提示：** 本项目已强制使用 `pnpm` 作为包管理器。请确保您已安装 `pnpm`。如果在 `build` 过程中遇到问题，这可能是由于依赖缓存或版本不兼容引起的。`.npmrc` 文件中的 `legacy-peer-deps=true` 设置已尝试缓解部分兼容性问题。
+    1. 删除 `pnpm-lock.yaml` 文件
+    2. 删除之前安装的 `node_modules` 文件
+    3. 重新执行安装和 build 命令：
+        ```bash
+        pnpm install
+        pnpm run build
+        ```
+    4. 如果还是不行，请提交 [Issues](https://github.com/llxq/omni-seek/issues) 并附带您的报错截图
 
 - **执行 build 命令 tsc 报错导致的语法错误**
-  1. 您可以尝试按照提示修复该类型报错并且欢迎您提交 [Pull Requests](https://github.com/llxq/omni-seek/pulls)
-  2. 如果您不想修改报错，可以修改 `package.json` 中 `build` 脚本为 build: "gulp"
-  3. 如果您不想修改文件，可直接通过 npx 执行 gulp 脚本，直接在终端运行：`npx gulp`
+    1. 您可以尝试按照提示修复该类型报错并且欢迎您提交 [Pull Requests](https://github.com/llxq/omni-seek/pulls)
+    2. 如果您不想修改报错，可以修改 `package.json` 中 `build` 脚本为 build: "gulp"
+    3. 如果您不想修改文件，可直接通过 npx 执行 gulp 脚本，直接在终端运行：`npx gulp`
 
 ## 📝 权限说明
 

@@ -20,7 +20,7 @@ export const getStorage = async <T = any>(
 ): Promise<T> => {
   return new Promise((resolve) => {
     chrome.storage.local.get(key, (result) => {
-      resolve(result[key] || defaultValue);
+      resolve((result[key] || defaultValue) as T);
     });
   });
 };

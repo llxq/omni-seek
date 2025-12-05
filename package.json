@@ -5,6 +5,7 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "gulp --w",
     "build": "vue-tsc --noEmit -p tsconfig.app.json && gulp",
     "lint": "eslint ."
