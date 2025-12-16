@@ -42,9 +42,11 @@ export const Layout = () => {
   const [themeClass, setThemeClass] = useState("");
   const [temporaryData, setTemporaryData] =
     useState<TUndefinable<IOmniCollectSearchData>>(void 0);
+  const [source, setSource] = useState<"add" | "edit">("edit");
 
   const back = () => {
     setTemporaryData(void 0);
+    setSource("edit");
   };
 
   useEffect(() => {
@@ -54,6 +56,9 @@ export const Layout = () => {
       setTemporaryData(data || void 0);
       // 用完直接删除
       void removeStorage(CUSTOM_ADD_COLLECTION_DATA_STORAGE_KEY);
+      if (data) {
+        setSource("add");
+      }
     });
 
     getStorage<IOmniSearchSetting>(OMNI_SEARCH_SETTING_KEY).then((setting) => {
@@ -74,7 +79,7 @@ export const Layout = () => {
   return (
     <div className={`layout__wrapper ${themeClass}`}>
       {temporaryData ? (
-        <AddCollect data={temporaryData} back={back} />
+        <AddCollect data={temporaryData} back={back} source={source} />
       ) : (
         <div className={`layout__container`}>
           <div className="layout__header">

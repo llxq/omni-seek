@@ -12,9 +12,10 @@ import { closePopup } from "../../shared/utils.ts";
 interface IAddCollectProps {
   data: IOmniCollectSearchData;
   back: () => void;
+  source: "add" | "edit";
 }
 
-export const AddCollect = ({ data, back }: IAddCollectProps) => {
+export const AddCollect = ({ data, back, source }: IAddCollectProps) => {
   const [title, setTitle] = useState(data.title || "");
 
   const baseConfirm = async (isClose = false) => {
@@ -39,7 +40,11 @@ export const AddCollect = ({ data, back }: IAddCollectProps) => {
   };
 
   const cancel = () => {
-    closePopup();
+    if (source === "add") {
+      closePopup();
+    } else {
+      back();
+    }
   };
 
   const confirmAndBack = () => {
@@ -66,7 +71,7 @@ export const AddCollect = ({ data, back }: IAddCollectProps) => {
           取消
         </div>
         <div className="is-button" onClick={confirmAndBack}>
-          保存并返回搜索页面
+          保存并返回{source === "add" ? "搜索页面" : ""}
         </div>
         <div className="is-button is-primary" onClick={confirm}>
           保存
